@@ -1,6 +1,6 @@
 # MedellínJS: JEV y los modelos de decisión
 
-La presentación conserva 17 diapositivas y una hora de notas, incluidos diez minutos de preguntas. Las diapositivas 11 y 13 abren una página independiente de comparación; se presentan después de las dos simulaciones animadas. La interfaz, la evidencia y las notas están en español; los identificadores de JavaScript y de las APIs conservan sus nombres.
+Presentación para MedellínJS sobre JEV y los modelos de decisión, con notas del presentador y una página de demos que compara en vivo a JEV con un LLM local.
 
 ## Abrir la charla y las demos
 
