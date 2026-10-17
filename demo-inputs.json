@@ -1,0 +1,203 @@
+{
+  "ticket": {
+    "clear": {
+      "model": "jev-latest",
+      "state": {
+        "ticket": {
+          "subject": "La compra no funciona",
+          "body": "La compra lleva tres días fallando. Estamos perdiendo ventas. Estoy furioso. Por favor ayúdennos hoy."
+        }
+      },
+      "questions": {
+        "category": {
+          "type": "choice",
+          "instructions": "¿Qué categoría describe mejor el problema de `ticket`?",
+          "criteria": {
+            "billing": "Cobros, reembolsos o pagos de suscripción",
+            "technical": "Errores de software o fallas de integración",
+            "review": "Responsabilidad poco clara; una persona debe aclarar el problema"
+          }
+        },
+        "frustration": {
+          "type": "score",
+          "instructions": "¿Qué tan frustrado suena el cliente en `ticket.body`?",
+          "criteria": [
+            "Tranquilo, solo describe hechos",
+            "Frustrado pero cordial",
+            "Muy enojado, usa expresiones intensas"
+          ]
+        },
+        "urgency": {
+          "type": "noul",
+          "instructions": "¿`ticket.body` describe un problema actual que necesita atención hoy?"
+        }
+      }
+    },
+    "ambiguous": {
+      "model": "jev-latest",
+      "state": {
+        "ticket": {
+          "subject": "Duda sobre un pago",
+          "body": "Mi pago parece extraño. Algo en mi cuenta no funciona. ¿Lo pueden revisar cuando haya tiempo?"
+        }
+      },
+      "questions": {
+        "category": {
+          "type": "choice",
+          "instructions": "¿Qué categoría describe mejor el problema de `ticket`?",
+          "criteria": {
+            "billing": "Cobros, reembolsos o pagos de suscripción",
+            "technical": "Errores de software o fallas de integración",
+            "review": "Responsabilidad poco clara; una persona debe aclarar el problema"
+          }
+        },
+        "frustration": {
+          "type": "score",
+          "instructions": "¿Qué tan frustrado suena el cliente en `ticket.body`?",
+          "criteria": [
+            "Tranquilo, solo describe hechos",
+            "Frustrado pero cordial",
+            "Muy enojado, usa expresiones intensas"
+          ]
+        },
+        "urgency": {
+          "type": "noul",
+          "instructions": "¿`ticket.body` describe un problema actual que necesita atención hoy?"
+        }
+      }
+    },
+    "billing": {
+      "model": "jev-latest",
+      "state": {
+        "ticket": {
+          "subject": "Un cobro que no reconozco",
+          "body": "Veo dos cobros parecidos en el extracto, pero no sé si uno es una preautorización. ¿Pueden revisarlo esta semana?"
+        }
+      },
+      "questions": {
+        "category": {
+          "type": "choice",
+          "instructions": "¿Qué categoría describe mejor el problema de `ticket`?",
+          "criteria": {
+            "billing": "Cobros, reembolsos o pagos de suscripción",
+            "technical": "Errores de software o fallas de integración",
+            "review": "Responsabilidad poco clara; una persona debe aclarar el problema"
+          }
+        },
+        "frustration": {
+          "type": "score",
+          "instructions": "¿Qué tan frustrado suena el cliente en `ticket.body`?",
+          "criteria": [
+            "Tranquilo, solo describe hechos",
+            "Frustrado pero cordial",
+            "Muy enojado, usa expresiones intensas"
+          ]
+        },
+        "urgency": {
+          "type": "noul",
+          "instructions": "¿`ticket.body` describe un problema actual que necesita atención hoy?"
+        }
+      }
+    }
+  },
+  "mail": {
+    "clear": {
+      "model": "jev-latest",
+      "state": {
+        "emails": {
+          "e01": {
+            "subject": "¡Ganaste un bono!",
+            "body": "Premio no solicitado: reclama un bono de un concurso en el que no participaste. Primero paga una tarifa."
+          },
+          "e02": {
+            "subject": "¿Almorzamos mañana?",
+            "body": "Como hablamos, ¿nos vemos a almorzar mañana al mediodía?"
+          },
+          "e03": {
+            "subject": "Aviso sobre tu cuenta",
+            "body": "Aviso no solicitado: cerraremos tu cuenta. Envía tu contraseña para verificar el acceso de inmediato."
+          },
+          "e04": {
+            "subject": "Oferta de servicio no solicitada",
+            "body": "Encontramos tu sitio y queremos ofrecerte un rediseño. ¿Podemos enviarte una cotización?"
+          },
+          "e05": {
+            "subject": "Notas del proyecto solicitadas",
+            "body": "Aquí están las notas del proyecto que me pediste después de nuestra reunión."
+          }
+        }
+      },
+      "questions": {
+        "spam_e01": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e01` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        },
+        "spam_e02": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e02` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        },
+        "spam_e03": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e03` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        },
+        "spam_e04": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e04` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        },
+        "spam_e05": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e05` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        }
+      }
+    },
+    "ambiguous": {
+      "model": "jev-latest",
+      "state": {
+        "emails": {
+          "e01": {
+            "subject": "El boletín de esta semana",
+            "body": "Te enviamos novedades de nuestro producto. No recuerdas si te suscribiste hace meses."
+          },
+          "e02": {
+            "subject": "Propuesta para tu equipo",
+            "body": "Hola, nos conocimos en un evento. Quería compartir una propuesta comercial; dime si no te interesa."
+          },
+          "e03": {
+            "subject": "Actividad en tu cuenta",
+            "body": "Detectamos un acceso. Abre el portal que usas habitualmente para revisar los movimientos. No respondas con datos."
+          },
+          "e04": {
+            "subject": "Descuento disponible",
+            "body": "Esta semana ofrecemos un descuento en servicios. No consta una conversación previa."
+          },
+          "e05": {
+            "subject": "Seguimiento de la reunión",
+            "body": "Gracias por la reunión del lunes. Te comparto el resumen acordado y las preguntas pendientes."
+          }
+        }
+      },
+      "questions": {
+        "spam_e01": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e01` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        },
+        "spam_e02": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e02` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        },
+        "spam_e03": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e03` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        },
+        "spam_e04": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e04` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        },
+        "spam_e05": {
+          "type": "noul",
+          "instructions": "¿El correo en `emails.e05` es spam (promoción no solicitada, estafa o intento de obtener credenciales)? Evalúa solo este correo, no los demás."
+        }
+      }
+    }
+  }
+}

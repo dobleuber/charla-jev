@@ -1,0 +1,75 @@
+/* Connected, staged flowcharts: Jev's API boundary and application rules stay distinct. */
+.demo-slide { padding:1.2rem 2.4rem; gap:.5rem; grid-template-rows:auto minmax(min-content,1fr) auto; }
+.demo-slide .body { justify-content:flex-start; min-height:0; }
+.demo-slide h2 { font-size:2.1rem; margin-bottom:.4rem; }
+.demo-slide .bottom { padding-top:.6rem; }
+/* Reading order on the slide: controls, phases, step caption, chart, givens, app action, disclaimer. */
+.decision-demo { display:flex; flex-direction:column; flex:1 1 auto; min-width:0; color:var(--fg); font-size:1rem; }
+.demo-toolbar { order:1; display:flex; align-items:center; justify-content:space-between; gap:.5rem; flex-wrap:wrap; }
+.demo-toolbar label { display:flex; align-items:center; gap:.6rem; font:700 .82rem var(--font-mono); letter-spacing:.06em; text-transform:uppercase; min-width:0; }
+.demo-toolbar select { max-width:100%; min-width:0; padding:.4rem .5rem; border:1px solid var(--edge); border-radius:0; background:var(--surface); color:var(--surface-fg); font:500 .9rem var(--font-display); text-transform:none; letter-spacing:0; }
+.demo-buttons { display:flex; gap:.4rem; flex-wrap:wrap; }
+.demo-buttons button { padding:.45rem .9rem; border:1px solid var(--edge); border-radius:0; background:var(--surface); color:var(--accent); font:800 .82rem/1.15 var(--font-mono); letter-spacing:.06em; text-transform:uppercase; cursor:pointer; }
+.demo-buttons [data-action=play] { background:var(--accent); color:var(--on-accent); border-color:var(--accent); min-width:5.6rem; box-shadow:0 0 12px var(--glow); }
+.demo-buttons button:disabled { opacity:.4; cursor:default; box-shadow:none; }
+.demo-buttons button:hover:not(:disabled) { filter:brightness(1.2); }
+.decision-demo :is(button,select):focus-visible { outline:3px solid var(--yellow); outline-offset:3px; }
+.demo-phases { order:2; display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); list-style:none; padding:0; margin:.45rem 0 0; gap:.4rem; }
+.demo-phases li { display:flex; align-items:center; gap:.45rem; padding:.3rem .2rem; border-bottom:3px solid var(--rule); font-size:.85rem; line-height:1.3; font-weight:700; color:var(--soft); }
+.demo-phases li span { display:grid; place-items:center; width:1.4rem; height:1.4rem; flex-shrink:0; background:var(--surface); color:var(--surface-fg); box-shadow:inset 0 0 0 1px var(--edge); font:800 .75rem var(--font-mono); }
+.demo-phases .is-current { color:var(--accent); border-color:var(--accent); }
+.demo-phases .is-current span { background:var(--accent); color:var(--on-accent); box-shadow:0 0 10px var(--glow); }
+.demo-phases .is-complete { border-color:var(--accent-2); }
+.demo-caption { order:3; margin:.4rem 0 .2rem; font-size:1rem; line-height:1.35; font-weight:600; }
+.chart-host { order:4; display:flex; align-items:center; flex:1 1 auto; min-width:0; }
+/* Height follows whichever is tighter: the viewport height left over, or the chart's own 1240:276 ratio at slide width. */
+.flowchart { display:block; width:100%; height:max(11rem,min(calc(100svh - 28rem),calc((100vw - 7.8rem) * .2226),15.4rem)); overflow:visible; }
+.chart-node rect { fill:var(--surface); stroke:var(--edge); stroke-width:1.5; transition:stroke .3s,fill .3s; }
+.node-label { fill:var(--soft); font:700 13px var(--font-mono); letter-spacing:.5px; }
+.node-text { fill:var(--surface-fg); font:600 19px var(--font-display); }
+.node-answer { fill:var(--accent); font:800 17px var(--font-mono); }
+.chart-node.is-active rect { stroke:var(--accent); stroke-width:2.5; filter:drop-shadow(0 0 6px var(--glow)); }
+.chart-edge { fill:none; stroke:var(--soft); stroke-opacity:.7; stroke-width:2; transition:stroke .25s,opacity .25s; }
+.chart-edge.is-active,.branch-edge.is-selected { stroke:var(--accent); stroke-opacity:1; stroke-width:3.5; stroke-dasharray:1; animation:trace-path .85s ease-out; filter:drop-shadow(0 0 4px var(--accent)); }
+@keyframes trace-path { from { stroke-dashoffset:1; } to { stroke-dashoffset:0; } }
+.branch-edge.is-dimmed,.outcome.is-dimmed { opacity:.22; }
+.outcome { transition:opacity .35s; }
+.outcome.is-selected rect { fill:color-mix(in srgb,var(--accent) 16%,var(--surface)); stroke:var(--accent); stroke-width:3; animation:arrival .45s ease-out; }
+@keyframes arrival { from { stroke-width:6; } to { stroke-width:3; } }
+.rule-node path { fill:#fcee0a14; stroke:var(--yellow); stroke-opacity:.6; stroke-width:1.8; }
+.rule-node text { fill:var(--fg); font:700 13px var(--font-mono); }
+.rule-node.is-active path { stroke:var(--yellow); stroke-opacity:1; stroke-width:3; filter:drop-shadow(0 0 6px #fcee0a99); }
+.ownership-line { fill:none; stroke:var(--accent-2); stroke-opacity:.6; stroke-width:2; stroke-dasharray:7 6; }
+.ownership-label { fill:var(--accent-2); font:800 13px var(--font-mono); letter-spacing:.8px; }
+.returned-answer[aria-hidden="true"],.decision-action[aria-hidden="true"] { visibility:hidden; }
+.flow-context { order:5; margin:.3rem 0 0; font-size:.85rem; line-height:1.4; }
+.decision-action { order:6; min-height:1.35em; margin:.3rem 0; padding:.3rem .7rem; border-left:4px solid var(--accent-2); background:var(--surface); color:var(--surface-fg); font-size:1rem; line-height:1.35; font-weight:650; }
+.demo-disclaimer { order:7; margin:.1rem 0 0; font:.78rem/1.4 var(--font-mono); color:var(--soft); }
+@media(max-width:800px) {
+  .demo-slide { padding:1.2rem 1.1rem; }
+  .demo-slide .body { min-height:auto; }
+  .demo-slide h2 { font-size:1.8rem; }
+  .demo-toolbar label { flex-wrap:wrap; font-size:.8rem; }
+  .demo-buttons button { padding:.45rem .7rem; font-size:.8rem; }
+  .demo-phases { gap:.3rem; }
+  .demo-phases li { flex-direction:column; gap:.35rem; padding:.3rem .1rem; font-size:.63rem; text-align:center; }
+  .demo-phases li span { width:1.2rem; height:1.2rem; font-size:inherit; }
+  .demo-caption { font-size:.9rem; }
+  .chart-host { display:block; flex:none; }
+  .flowchart { height:auto; }
+  .node-label,.rule-node text { font-size:12px; }
+  .node-text { font-size:17px; }
+  .node-answer { font-size:14px; }
+  .ownership-label { font-size:11px; }
+  .decision-action { min-height:0; font-size:.9rem; }
+}
+@media(prefers-reduced-motion:reduce) {
+  .decision-demo *, .decision-demo *::before { animation:none !important; transition:none !important; }
+}
+@media print {
+  .demo-toolbar,.demo-phases,.demo-caption { display:none; }
+  .decision-demo * { animation:none !important; transition:none !important; }
+  .returned-answer,.decision-action { visibility:visible !important; }
+  .chart-edge { stroke-dashoffset:0 !important; }
+  .flowchart { height:min(42vh,20rem); }
+}

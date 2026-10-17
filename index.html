@@ -1,0 +1,441 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#05050b">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700&family=JetBrains+Mono:wght@500;700;800&display=swap">
+  <title>JEV y los modelos de decisión — presentación</title>
+  <style>
+    /* Cyberpunk theme: neon on void. Each slide variant only swaps tokens; layout rules stay shared. */
+    :root {
+      --void:#05050b; --panel:#0b0c18; --cyan:#00f0ff; --magenta:#ff2a6d; --yellow:#fcee0a; --violet:#7b2cff;
+      --text:#e4f1ff; --dim:#97a8c6;
+      --font-display:"Chakra Petch",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+      --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+      --cut:1.6rem;
+    }
+    * { box-sizing:border-box; }
+    /* One fluid unit: every rem follows the projected viewport (about 17.7px at 1365×768, 20.8px at 1600×1000). */
+    html { font-size:clamp(16px,min(1.3vw,2.3vh),26px); scroll-behavior:smooth; }
+    body { margin:0; color:var(--text); font:500 1rem/1.45 var(--font-display);
+      background:
+        radial-gradient(60rem 40rem at 10% -10%,#ff2a6d24,transparent 60%),
+        radial-gradient(60rem 40rem at 110% 110%,#00f0ff1f,transparent 60%),
+        linear-gradient(#00f0ff0d 1px,transparent 1px) 0 0/3rem 3rem,
+        linear-gradient(90deg,#00f0ff0d 1px,transparent 1px) 0 0/3rem 3rem,
+        var(--void); }
+    /* CRT scanlines over everything; never intercepts input. */
+    body::after { content:""; position:fixed; inset:0; z-index:4; pointer-events:none; background:repeating-linear-gradient(0deg,#0000002e 0 1px,transparent 1px 3px); mix-blend-mode:multiply; }
+    a { color:inherit; }
+    button, a { -webkit-tap-highlight-color:transparent; }
+    button:focus-visible, a:focus-visible { outline:3px solid var(--yellow); outline-offset:4px; }
+    .slide a:focus-visible { outline-color:currentColor; }
+    .progress-track { position:fixed; top:0; left:0; width:100%; height:4px; background:#1a1030; z-index:5; }
+    #progress { display:block; height:100%; width:6.666%; background:linear-gradient(90deg,var(--magenta),var(--cyan)); box-shadow:0 0 10px var(--cyan),0 0 22px #ff2a6d88; transition:width .22s ease; }
+    .viewport { display:grid; place-items:center; min-height:100svh; padding:1.1rem 1.5rem 4.3rem; }
+
+    .slide {
+      --bg:var(--panel); --fg:var(--text); --soft:var(--dim); --accent:var(--cyan); --accent-2:var(--magenta); --on-accent:#05050b;
+      --surface:#0f1228; --surface-fg:var(--text); --surface-soft:var(--dim); --surface-accent:var(--accent); --edge:#00f0ff4d; --rule:#00f0ff38; --grid:#00f0ff0f; --glow:#00f0ff99;
+      position:relative; display:grid; grid-template-rows:auto minmax(min-content,1fr) auto; grid-template-columns:minmax(0,1fr); gap:1.2rem; width:min(74rem,100%); height:min(calc(100svh - 5.4rem),44rem); min-height:28rem; overflow:auto; overflow-wrap:break-word; padding:2.4rem 4rem;
+      color:var(--fg);
+      background:linear-gradient(var(--grid) 1px,transparent 1px) 0 0/2.5rem 2.5rem, linear-gradient(90deg,var(--grid) 1px,transparent 1px) 0 0/2.5rem 2.5rem, var(--bg);
+      box-shadow:inset 0 0 0 1px var(--edge), inset 0 0 5rem #00000070;
+      clip-path:polygon(0 0,calc(100% - var(--cut)) 0,100% var(--cut),100% 100%,var(--cut) 100%,0 calc(100% - var(--cut)));
+    }
+    /* Neon tab on the top edge and a hazard stripe in the lower cut corner. */
+    .slide::before { content:""; position:absolute; top:0; left:4rem; width:9rem; height:4px; background:var(--accent); box-shadow:0 0 14px var(--accent); }
+    .slide::after { content:""; position:absolute; right:0; bottom:0; width:5rem; height:.45rem; background:repeating-linear-gradient(-45deg,var(--accent-2) 0 .4rem,transparent .4rem .8rem); opacity:.8; }
+    .slide[hidden] { display:none !important; }
+    .slide--dark { --bg:#07070f; --accent:var(--magenta); --accent-2:var(--cyan); --edge:#ff2a6d59; --rule:#ff2a6d45; --grid:#ff2a6d0d; --glow:#ff2a6d99; --surface:#120a1c; }
+    .slide--blue { --bg:radial-gradient(50rem 30rem at 85% 0%,#7b2cff59,transparent 70%),#12082a; --accent:var(--cyan); --accent-2:var(--yellow); --edge:#7b2cff99; --rule:#b38cff55; --grid:#7b2cff1a; --surface:#1b0f3a; --soft:#c3b5e8; --surface-soft:#c3b5e8; }
+    .slide--cream { --accent:var(--yellow); --accent-2:var(--magenta); --edge:#fcee0a47; --rule:#fcee0a33; --grid:#fcee0a0b; --glow:#fcee0a80; --surface:#14130c; }
+    .slide--lime { --bg:var(--yellow); --fg:#07070d; --soft:#3e3b0c; --accent:#d1004b; --accent-2:#07070d; --on-accent:#fff; --surface:#07070d; --surface-fg:var(--yellow); --surface-soft:#d8cf6a; --surface-accent:var(--magenta); --edge:#07070d; --rule:#07070d59; --grid:#07070d14; --glow:transparent; box-shadow:inset 0 0 0 2px #07070d; }
+
+    .mast { display:flex; justify-content:space-between; align-items:center; gap:1rem; font:700 .78rem/1.3 var(--font-mono); letter-spacing:.14em; text-transform:uppercase; }
+    .mast > span { min-width:0; overflow-wrap:anywhere; }
+    .mast > span:first-child { color:var(--accent); }
+    .mast > span:first-child::before { content:"// "; color:var(--accent-2); }
+    .mast .kind { color:var(--soft); text-align:right; }
+    .mast .kind::after { content:" ▮"; color:var(--accent); animation:blink 1.1s steps(1) infinite; }
+    @keyframes blink { 50% { opacity:0; } }
+    .body { display:flex; flex-direction:column; justify-content:center; min-width:0; }
+    .bottom { display:flex; align-items:end; justify-content:space-between; gap:2rem; padding-top:.8rem; border-top:1px dashed var(--rule); color:var(--soft); font:500 .82rem/1.45 var(--font-mono); }
+    .bottom .source { max-width:100%; }
+    .bottom .source::before { content:"> "; color:var(--accent); font-weight:800; }
+    .bottom .source a { color:var(--accent); text-decoration:underline; text-decoration-thickness:1px; text-underline-offset:3px; }
+    h1,h2,h3,p,blockquote { margin:0; }
+    h1 { font-size:5.6rem; line-height:1; letter-spacing:-.02em; font-weight:700; text-shadow:-.035em 0 #ff2a6dcc,.035em 0 #00f0ffcc; animation:glitch 6s infinite; }
+    @keyframes glitch {
+      0%,90%,100% { text-shadow:-.035em 0 #ff2a6dcc,.035em 0 #00f0ffcc; transform:none; }
+      91% { text-shadow:-.09em 0 #ff2a6d,.06em 0 #00f0ff; transform:translateX(.02em) skewX(-4deg); }
+      93% { text-shadow:.07em 0 #ff2a6d,-.08em 0 #00f0ff; transform:translateX(-.03em); }
+      95% { text-shadow:-.035em 0 #ff2a6dcc,.035em 0 #00f0ffcc; transform:none; }
+    }
+    h2 { font-size:3.6rem; line-height:1.05; letter-spacing:-.02em; font-weight:700; }
+    h3 { font-size:1.7rem; line-height:1.15; letter-spacing:-.01em; font-weight:700; }
+    .lead { max-width:46rem; margin-top:1.2rem; font-size:1.6rem; line-height:1.3; }
+    .muted { color:var(--soft); }
+    .accent { color:var(--accent); text-shadow:0 0 .4em var(--glow); }
+    .chip { display:inline-flex; width:fit-content; padding:.3rem 1.1rem .3rem .8rem; border-left:3px solid var(--accent); color:var(--accent); background:color-mix(in srgb,var(--accent) 14%,transparent); font:700 .82rem/1.4 var(--font-mono); letter-spacing:.12em; clip-path:polygon(0 0,100% 0,100% 55%,calc(100% - .6rem) 100%,0 100%); }
+    .hero-rule { width:9rem; height:5px; margin:1.4rem 0 1.2rem; background:linear-gradient(90deg,var(--accent) 0 62%,transparent 62% 70%,var(--accent-2) 70% 84%,transparent 84% 90%,var(--accent-2) 90%); box-shadow:0 0 14px var(--glow); }
+    .question { max-width:56rem; margin:1.4rem 0 0; padding:1.1rem 1.5rem; border-left:6px solid var(--accent-2); background:var(--surface); color:var(--surface-fg); box-shadow:inset 0 0 0 1px var(--edge); font-size:1.9rem; line-height:1.25; font-weight:600; }
+    .small-note { margin-top:1.1rem; font-size:1.1rem; color:var(--soft); }
+    .small-note strong { color:var(--accent-2); }
+    .cards { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin-top:1.5rem; }
+    .card, .feature, .checks div, .quote, .step, .node {
+      color:var(--surface-fg); background:var(--surface); box-shadow:inset 0 0 0 1px var(--edge), inset 0 2px 0 var(--surface-accent);
+      clip-path:polygon(0 0,calc(100% - .9rem) 0,100% .9rem,100% 100%,0 100%);
+    }
+    .card { min-width:0; padding:1.1rem 1.3rem; }
+    .card strong { display:block; margin-bottom:.35rem; font-size:1.25rem; line-height:1.3; }
+    .card p { font-size:1.15rem; line-height:1.4; }
+    .card h3 { margin-bottom:.4rem; }
+    .card .small-note,.feature .small-note { margin-top:.9rem; font-size:1rem; color:var(--surface-soft); }
+    .feature li + li { margin-top:.35rem; }
+    .card .symbol { display:block; margin-bottom:.6rem; color:var(--surface-accent); font:800 2.2rem/1 var(--font-mono); letter-spacing:-.04em; font-variant-numeric:tabular-nums; text-shadow:0 0 .35em color-mix(in srgb,var(--surface-accent) 70%,transparent); }
+    .cards--numbered .card { display:grid; grid-template-columns:auto minmax(0,1fr); column-gap:1.1rem; align-items:start; }
+    .cards--numbered .card .symbol { grid-row:1 / span 2; margin:0; font-size:2.4rem; }
+    .feature-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:1.2rem; margin-top:1.6rem; }
+    .feature { min-width:0; padding:1.4rem 1.5rem; }
+    .feature h3 { margin-bottom:.6rem; color:var(--surface-accent); }
+    .feature p,.feature li { font-size:1.15rem; }
+    .feature ul { padding-left:1.2rem; margin:.55rem 0 0; }
+    .flow { display:flex; align-items:stretch; gap:.6rem; margin-top:2rem; }
+    .node { display:grid; place-content:center; flex:1; min-width:0; min-height:7rem; padding:1rem; text-align:center; }
+    .node strong { display:block; font-size:1.6rem; line-height:1.2; }
+    .node span { font-size:1.05rem; line-height:1.3; color:var(--surface-soft); }
+    .arrow { display:grid; place-content:center; color:var(--accent); font:800 1.8rem var(--font-mono); }
+    .node--accent { color:var(--on-accent); background:var(--accent); box-shadow:0 0 0 1px var(--accent); }
+    .node--accent span { color:var(--on-accent); }
+    .two { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:2.5rem; align-items:center; }
+    .two--wide { grid-template-columns:minmax(0,1fr) minmax(0,1.05fr); }
+    .two h2 { font-size:2.9rem; }
+    .quote { padding:1.3rem 1.5rem; font-size:1.7rem; font-weight:600; line-height:1.3; }
+    .quote small { display:block; margin-bottom:.7rem; font:800 .78rem var(--font-mono); letter-spacing:.13em; text-transform:uppercase; color:var(--accent-2); }
+    .question-list { display:grid; gap:.6rem; }
+    .question-list div { display:flex; gap:.8rem; align-items:baseline; padding:.65rem 1.1rem; color:var(--surface-fg); background:var(--surface); border-left:3px solid var(--accent); }
+    .question-list b { min-width:5rem; color:var(--accent); font:800 .82rem var(--font-mono); text-transform:uppercase; letter-spacing:.08em; }
+    .question-list span { font-size:1.2rem; }
+    .block { padding:1.2rem 1.4rem; background:#020207; color:#bdf8ff; box-shadow:inset 0 0 0 1px var(--edge), 0 0 0 transparent; clip-path:polygon(0 0,calc(100% - .9rem) 0,100% .9rem,100% 100%,0 100%); }
+    .block > strong { display:block; margin-bottom:.7rem; color:var(--accent-2); font:800 .78rem var(--font-mono); text-transform:uppercase; letter-spacing:.12em; }
+    pre { margin:0; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; font:clamp(.76rem,1.14vw,.94rem)/1.4 var(--font-mono); letter-spacing:-.02em; text-shadow:0 0 6px #00f0ff55; }
+    .example-mark { display:inline-block; align-self:flex-start; padding:.26rem .9rem .26rem .7rem; color:#05050b; background:var(--yellow); font:800 .78rem var(--font-mono); letter-spacing:.1em; text-transform:uppercase; clip-path:polygon(0 0,100% 0,calc(100% - .5rem) 100%,0 100%); }
+    .slide--lime .example-mark { color:var(--yellow); background:#07070d; }
+    .callout { margin-top:1.4rem; padding:.9rem 1.2rem; border-left:5px solid var(--accent-2); background:var(--surface); color:var(--surface-fg); font-size:1.1rem; line-height:1.4; }
+    .steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin-top:1.6rem; }
+    .step { min-width:0; padding:1.2rem 1.3rem; box-shadow:inset 0 0 0 1px var(--edge), inset 5px 0 0 var(--accent); }
+    .step b { display:block; margin-bottom:.6rem; color:var(--accent); font:800 .82rem var(--font-mono); letter-spacing:.12em; }
+    .step strong { display:block; font-size:1.3rem; line-height:1.25; }
+    .step p { margin-top:.4rem; font-size:1.1rem; color:var(--surface-soft); }
+    .verdict { margin-top:1.4rem; font-size:2.2rem; line-height:1.15; font-weight:700; letter-spacing:-.01em; }
+    .verdict::before { content:"▶ "; color:var(--accent-2); }
+    .checks { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:.8rem; margin-top:1.4rem; }
+    .checks div { min-width:0; padding:1rem 1.3rem; }
+    .checks strong { display:block; margin-bottom:.3rem; color:var(--accent); font-size:1.25rem; line-height:1.3; }
+    .checks strong::before { content:"⚠ "; color:var(--accent-2); }
+    .checks p { font-size:1.1rem; }
+    .mail-map { display:grid; grid-template-columns:1fr 1fr; gap:2rem; margin-top:1.1rem; }
+    .mail-map h3 { font-size:1.45rem; margin-bottom:.6rem; color:var(--accent); }
+    .mail-map ul { list-style:none; padding:0; margin:0; }
+    .mail-map li { padding:.5rem 0; border-bottom:1px dashed var(--rule); font-size:1.1rem; }
+    .mail-map li code { color:var(--accent-2); font-weight:700; margin-right:.5rem; }
+    .mail-instruction { margin-top:1rem; padding:.7rem .9rem; border-left:4px solid var(--accent-2); background:var(--surface); font-size:1.05rem; line-height:1.35; }
+    code { font-family:var(--font-mono); font-size:.92em; }
+    .mail-instruction code { font-weight:700; color:var(--accent); }
+    .demo-launch { display:inline-flex; align-self:flex-start; margin-top:1.4rem; padding:.7rem 1.6rem .7rem 1.2rem; color:var(--on-accent); background:var(--accent); font:800 1.05rem var(--font-mono); letter-spacing:.06em; text-transform:uppercase; text-decoration:none; clip-path:polygon(0 0,100% 0,100% 60%,calc(100% - .8rem) 100%,0 100%); transition:filter .2s; }
+    .demo-launch:hover { filter:brightness(1.15) drop-shadow(0 0 8px var(--accent)); }
+
+    .control-bar { position:fixed; left:50%; bottom:.6rem; z-index:10; transform:translateX(-50%); display:flex; align-items:center; gap:.5rem; width:max-content; max-width:calc(100vw - 1rem); padding:.4rem .7rem; color:var(--text); background:#05050bdd; backdrop-filter:blur(6px); box-shadow:inset 0 0 0 1px #00f0ff66, 0 0 18px #00f0ff33; clip-path:polygon(.7rem 0,100% 0,100% calc(100% - .7rem),calc(100% - .7rem) 100%,0 100%,0 .7rem); font:.82rem var(--font-mono); }
+    .control-bar button,.control-bar a { display:inline-flex; align-items:center; justify-content:center; min-width:2.3rem; min-height:2.3rem; padding:.25rem .7rem; border:1px solid #00f0ff59; border-radius:0; color:var(--cyan); background:transparent; font:inherit; font-weight:800; text-decoration:none; cursor:pointer; transition:background .15s,box-shadow .15s; }
+    .control-bar button:hover:not(:disabled),.control-bar a:hover { background:#00f0ff1f; box-shadow:0 0 10px #00f0ff66; }
+    .control-bar button:disabled { opacity:.35; cursor:default; }
+    #slide-counter { min-width:4.5rem; text-align:center; font-variant-numeric:tabular-nums; font-weight:800; color:var(--magenta); text-shadow:0 0 8px #ff2a6d99; }
+    .control-hint { padding:0 .45rem; color:var(--dim); }
+    @media (prefers-reduced-motion:reduce) {
+      html { scroll-behavior:auto; }
+      *,*::before,*::after { animation:none !important; transition:none !important; }
+    }
+    @media print {
+      *,*::before,*::after { animation:none !important; transition:none !important; }
+    }
+    @media(max-width:800px) {
+      .viewport { padding:.7rem .6rem 4.6rem; }
+      .slide { --cut:1rem; height:auto; min-height:calc(100svh - 5.6rem); padding:1.5rem 1.3rem; gap:1.1rem; }
+      .slide::before { left:1.3rem; width:5rem; }
+      .two,.two--wide,.feature-grid,.mail-map { grid-template-columns:minmax(0,1fr); gap:1rem; }
+      .cards { grid-template-columns:minmax(0,1fr); gap:.7rem; }
+      .cards .card { padding:.8rem 1rem; }
+      .cards .card .symbol { display:inline; margin-right:.7rem; font-size:1.5rem; }
+      .cards--numbered .card .symbol { margin:0; font-size:1.7rem; }
+      .flow { flex-direction:column; margin-top:1rem; }
+      .node { min-height:80px; }
+      .arrow { transform:rotate(90deg); }
+      .steps { grid-template-columns:minmax(0,1fr); }
+      h1 { font-size:clamp(2.6rem,11vw,4.5rem); }
+      h2,.two h2 { font-size:clamp(2rem,7.5vw,3.2rem); }
+      h3 { font-size:1.35rem; }
+      .lead { font-size:1.25rem; }
+      .question { padding:.9rem 1.1rem; font-size:1.35rem; }
+      .quote { padding:1.1rem 1.2rem; font-size:1.3rem; }
+      .verdict { font-size:1.6rem; }
+      .card p,.feature p,.feature li,.step p,.checks p,.small-note,.question-list span,.mail-map li { font-size:1.05rem; }
+      .control-hint { display:none; }
+    }
+    @media(max-width:480px) {
+      .checks { grid-template-columns:minmax(0,1fr); }
+    }
+    @media print {
+      body { background:var(--void); }
+      body::after,.progress-track,.control-bar { display:none; }
+      .viewport { display:block; padding:0; }
+      .slide,.slide[hidden] { display:grid !important; width:100%; height:100vh; min-height:0; overflow:hidden; margin:0; clip-path:none; break-after:page; page-break-after:always; -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    }
+  </style>
+  <link rel="stylesheet" href="decisions.css">
+  <script defer src="decisions.js"></script>
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <aside id="file-notice" hidden style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:30;background:#05050b;color:#e4f1ff;padding:8px 14px;border:1px solid #ff2a6d;font-family:monospace;font-size:13px;max-width:90vw">Abriste un archivo local. Para las demos reales, <a href="http://127.0.0.1:8000/index.html">abre la charla por HTTP</a>.</aside>
+  <div class="progress-track" aria-hidden="true"><span id="progress" role="progressbar" aria-valuemin="1" aria-valuemax="17" aria-valuenow="1"></span></div>
+  <main class="viewport" id="deck" aria-label="Presentación sobre JEV y los modelos de decisión">
+
+    <section class="slide slide--dark" id="slide-1" aria-label="Diapositiva de título">
+      <div class="mast"><span>MedellínJS / 01</span><span class="kind">Del lenguaje a la acción</span></div>
+      <div class="body">
+        <span class="chip">CUANDO LA IA TOMA LA DECISIÓN</span>
+        <div class="hero-rule"></div>
+        <h1>JEV y<br><span class="accent">los modelos de decisión.</span></h1>
+        <p class="lead">Cuando tu app necesita una respuesta, ¿para qué pedir un párrafo?</p>
+      </div>
+      <div class="bottom"><span class="source">Juicios para el software, no prosa para personas.</span></div>
+    </section>
+
+    <section class="slide slide--cream" id="slide-2" aria-label="El problema con forma de decisión" hidden>
+      <div class="mast"><span>El problema / 02</span><span class="kind">Un mensaje, tres decisiones</span></div>
+      <div class="body">
+        <h2>No todo mensaje<br>necesita una respuesta.</h2>
+        <blockquote class="question">“El checkout lleva tres días caído. Los clientes no pueden pagar. Por favor, ayúdenme hoy.”</blockquote>
+        <div class="cards cards--numbered">
+          <div class="card"><span class="symbol">01</span><strong>¿Quién se encarga?</strong><p>Enrutar a un equipo.</p></div>
+          <div class="card"><span class="symbol">02</span><strong>¿Qué tan urgente es?</strong><p>Decidir si alertar.</p></div>
+          <div class="card"><span class="symbol">03</span><strong>¿Qué sigue?</strong><p>Actuar o pasar a revisión.</p></div>
+        </div>
+      </div>
+      <div class="bottom"><span class="source">El mensaje es evidencia. La acción sigue siendo responsabilidad de la aplicación.</span></div>
+    </section>
+
+    <section class="slide slide--lime" id="slide-3" aria-label="Qué hace un modelo de decisión" hidden>
+      <div class="mast"><span>Idea central / 03</span><span class="kind">Juicio acotado</span></div>
+      <div class="body">
+        <h2>Pide un <span class="accent">juicio</span>.<br>Recibe una respuesta tipada.</h2>
+        <div class="flow" aria-label="Del estado y la pregunta a Jev, a la respuesta y a la política de la aplicación">
+          <div class="node"><strong>Estado</strong><span>Lo que sabemos</span></div><div class="arrow" aria-hidden="true">→</div>
+          <div class="node"><strong>Pregunta</strong><span>Lo que necesitamos decidir</span></div><div class="arrow" aria-hidden="true">→</div>
+          <div class="node node--accent"><strong>Jev</strong><span>Evaluación acotada</span></div><div class="arrow" aria-hidden="true">→</div>
+          <div class="node"><strong>Código</strong><span>Acción o revisión humana</span></div>
+        </div>
+        <p class="small-note"><strong>Límite clave:</strong> juicio ≠ permiso para actuar.</p>
+      </div>
+      <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Documentación de TypeSafe</a></span></div>
+    </section>
+
+    <section class="slide" id="slide-4" aria-label="Primitivas de Jev" hidden>
+      <div class="mast"><span>Interfaz de Jev / 04</span><span class="kind">Tres preguntas tipadas</span></div>
+      <div class="body">
+        <h2>Tres formas de preguntar.</h2>
+        <div class="cards">
+          <div class="card"><span class="symbol">↗</span><h3>Choice</h3><p>¿Cuál opción? <br><strong>Facturación / Técnico / Revisión</strong></p><p class="small-note">Opción seleccionada + distribución + confianza</p></div>
+          <div class="card"><span class="symbol">≋</span><h3>Score</h3><p>¿En qué punto de una escala ordenada? <br><strong>Calmado / Frustrado / Muy enojado</strong></p><p class="small-note">Puntaje + distribución + confianza</p></div>
+          <div class="card"><span class="symbol">?</span><h3>Noul</h3><p>¿Este enunciado es verdadero? <br><strong>¿Urgente o no?</strong></p><p class="small-note">Un valor de 0 a 1</p></div>
+        </div>
+        <p class="small-note">Haz varias preguntas enfocadas sobre el mismo estado en una sola solicitud.</p>
+      </div>
+      <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Primitivas de TypeSafe</a> · El valor de Noul no es el mismo campo de respuesta que la confianza de Choice.</span></div>
+    </section>
+
+    <section class="slide slide--dark" id="slide-5" aria-label="Relación con los clasificadores tradicionales" hidden>
+      <div class="mast"><span>Contexto / 05</span><span class="kind">No es una nueva definición de clasificación</span></div>
+      <div class="body">
+        <h2>Ya teníamos<br><span class="accent">clasificadores.</span></h2>
+        <div class="feature-grid">
+          <div class="feature"><h3>El mismo trabajo de fondo</h3><p>Entra evidencia → sale una etiqueta finita o un puntaje. La precisión, el análisis de errores y la calibración siguen importando.</p></div>
+          <div class="feature"><h3>Flujo de trabajo distinto</h3><p>Con Jev, defines una pregunta tipada y opciones candidatas <em>en el momento de la solicitud</em>, en lugar de entrenar un clasificador aparte para cada tarea.</p></div>
+        </div>
+        <p class="small-note">Si una regla simple o un clasificador confiable específico para la tarea ya funciona, consérvalo.</p>
+      </div>
+      <div class="bottom"><span class="source">Interfaz novedosa, responsabilidades estadísticas conocidas.</span></div>
+    </section>
+
+    <section class="slide slide--cream" id="slide-6" aria-label="Modelos de lenguaje y modelos de decisión" hidden>
+      <div class="mast"><span>Contexto / 06</span><span class="kind">Una salida por defecto distinta</span></div>
+      <div class="body">
+        <h2>El texto no siempre es<br>el producto.</h2>
+        <div class="feature-grid">
+          <div class="feature"><h3>LLM generativo</h3><p>Redactar una respuesta. Explicar un problema. Sintetizar un informe. También <em>puede</em> generar JSON estructurado.</p></div>
+          <div class="feature"><h3>Modelo de decisión</h3><p>Devuelve una respuesta acotada que tu aplicación puede usar para enrutar, ordenar o solicitar revisión.</p></div>
+        </div>
+        <p class="verdict">Usa ambos cuando el flujo de trabajo necesite ambos.</p>
+      </div>
+      <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Visión general de los modelos de TypeSafe</a></span></div>
+    </section>
+
+    <section class="slide slide--blue" id="slide-7" aria-label="Preguntas de la demo del ticket de soporte" hidden>
+      <div class="mast"><span>Demo 01 / 07</span><span class="kind">Triaje de tickets · la entrada</span></div>
+      <div class="body two">
+        <div>
+          <span class="example-mark">Caso 1</span>
+          <h2 style="margin-top:1rem">Un ticket.<br>Tres preguntas.</h2>
+          <p class="lead">La misma evidencia, juicios independientes.</p>
+        </div>
+        <div>
+          <blockquote class="quote"><small>Ticket entrante</small>“El checkout lleva tres días fallando. Estamos perdiendo ventas. Estoy furioso. Por favor, ayúdenme hoy.”</blockquote>
+          <div class="question-list" style="margin-top:.8rem">
+            <div><b>Choice</b><span>¿Qué categoría?</span></div><div><b>Noul</b><span>¿El ticket necesita atención hoy?</span></div><div><b>Score</b><span>¿Qué tan frustrado está el cliente?</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="bottom"><span class="source">Describe la rúbrica antes de mostrar cualquier resultado.</span></div>
+    </section>
+
+    <section class="slide" id="slide-8" data-outline-slide="7" aria-label="Forma de la solicitud y la respuesta de Jev" hidden>
+      <div class="mast"><span>Demo 01 / 08</span><span class="kind">Triaje de tickets · la llamada</span></div>
+      <div class="body two two--wide">
+        <div>
+          <h2>Haz que la pregunta sea<br><span class="accent">explícita.</span></h2>
+          <p class="lead">Estado + preguntas tipadas → respuestas estructuradas.</p>
+          <div class="callout">Las claves de API se quedan en un servidor o en el playground de TypeSafe, no en estas diapositivas.</div>
+        </div>
+        <div class="block"><strong>1 POST /v1/systemone · conjunto completo de preguntas</strong><pre><code>{
+  "model": "jev-latest",
+  "state": {"ticket": {"body": "La compra falló…"}},
+  "questions": {
+    "category": {"type": "choice",
+      "instructions": "¿Categoría de `ticket`?",
+      "criteria": {"billing": "Cobros",
+        "technical": "Integración", "review": "Poco claro"}},
+    "frustration": {"type": "score",
+      "instructions": "¿Frustración en `ticket`?",
+      "criteria": ["Calmado", "Frustrado", "Muy enojado"]},
+    "urgency": {"type": "noul",
+      "instructions": "¿Atención hoy en `ticket`?"}
+  }
+}</code></pre></div>
+      </div>
+      <div class="bottom"><span class="source">Extracto de la solicitud con las tres preguntas. Los criterios completos y la respuesta ilustrativa están en las <a href="outline.html#slide-7" target="_blank" rel="noopener noreferrer">notas del presentador</a>. <a href="https://docs.typesafe.ai/introduction/quickstart" target="_blank" rel="noopener noreferrer">Esquema de la API</a>.</span></div>
+    </section>
+
+    <section class="slide demo-slide" id="slide-9" data-outline-slide="8" aria-label="Recorrido animado de selección de candidatos" hidden>
+      <div class="mast"><span>Demo 02 / 09</span><span class="kind">Solicitud → candidato</span></div>
+      <div class="body">
+        <h2>Una coincidencia, o <span class="accent">ninguna respuesta respaldada.</span></h2>
+        <div class="decision-demo" data-decision-demo="catalog"></div>
+      </div>
+      <div class="bottom"><span class="source"><a href="https://madewithjev.com/" target="_blank" rel="noopener noreferrer">Made with Jev: ejemplos de la comunidad</a> · Primero va la recuperación; lo que dicen las publicaciones no son hechos verificados.</span></div>
+    </section>
+
+    <section class="slide slide--dark demo-slide" id="slide-10" data-outline-slide="9" aria-label="Recorrido animado de reclamo y revisión" hidden>
+      <div class="mast"><span>Demo 03 / 10</span><span class="kind">Reclamo → revisión</span></div>
+      <div class="body">
+        <h2>Un reclamo no es <span class="accent">un hecho verificado.</span></h2>
+        <div class="decision-demo" data-decision-demo="review"></div>
+      </div>
+      <div class="bottom"><span class="source">Nunca emitas un reembolso basándote solo en la lectura que hace un modelo de un mensaje.</span></div>
+    </section>
+
+    <section class="slide slide--lime" id="slide-11" data-outline-slide="10" aria-label="Abrir comparación real ticket" hidden><div class="mast"><span>Demo 01 en vivo / 11</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Un ticket. Tres decisiones.</h2><p class="lead">La misma entrada para JEV y un LLM local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>Categoría: Choice</strong></div><div class="card"><span class="symbol">02</span><strong>Frustración: Score</strong></div><div class="card"><span class="symbol">03</span><strong>Urgencia: Noul</strong></div></div><a class="demo-launch" href="demos.html#ticket">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.<br>La espera está animada; no se inventan pasos internos ni progreso.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La ejecución comienza al pulsar Ejecutar en la página de demos.</span></div></section>
+
+    <section class="slide slide--cream" id="slide-12" data-outline-slide="11" aria-label="Cinco correos y cinco preguntas dirigidas en una solicitud" hidden>
+      <div class="mast"><span>Extensión de correo / 12</span><span class="kind">Un estado compartido</span></div>
+      <div class="body">
+        <h2>Cinco correos. <span class="accent">Una solicitud.</span></h2>
+        <div class="mail-map">
+          <div><h3><code>state.emails</code></h3><ul>
+            <li><code>e01</code> ¡Ganaste un bono!</li><li><code>e02</code> ¿Almorzamos mañana?</li><li><code>e03</code> Aviso sobre tu cuenta</li><li><code>e04</code> Oferta de servicio no solicitada</li><li><code>e05</code> Notas del proyecto solicitadas</li>
+          </ul></div>
+          <div><h3><code>questions</code> · todas Noul</h3><ul>
+            <li><code>spam_e01</code> evalúa <code>emails.e01</code></li><li><code>spam_e02</code> evalúa <code>emails.e02</code></li><li><code>spam_e03</code> evalúa <code>emails.e03</code></li><li><code>spam_e04</code> evalúa <code>emails.e04</code></li><li><code>spam_e05</code> evalúa <code>emails.e05</code></li>
+          </ul></div>
+        </div>
+        <p class="mail-instruction">Cada instrucción nombra su objetivo: “¿El correo en <code>emails.e01</code> es spam? Evalúa solo este correo.” Las claves de las preguntas no identifican el objetivo para el modelo.</p>
+      </div>
+      <div class="bottom"><span class="source">Solo correos sintéticos. Payload completo en las <a href="outline.html#slide-11" target="_blank" rel="noopener noreferrer">notas</a>. <a href="https://docs.typesafe.ai/primitives#reference-specific-fields" target="_blank" rel="noopener noreferrer">Rutas de estado explícitas</a>.</span></div>
+    </section>
+
+    <section class="slide " id="slide-13" data-outline-slide="12" aria-label="Abrir comparación real correos" hidden><div class="mast"><span>Demo correo en vivo / 13</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Cinco correos. Un envío.</h2><p class="lead">Cinco preguntas explícitas sobre un único lote.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>e01–e05: estado compartido</strong></div><div class="card"><span class="symbol">02</span><strong>5 respuestas en una petición</strong></div><div class="card"><span class="symbol">03</span><strong>El código agrupa con un corte</strong></div></div><a class="demo-launch" href="demos.html#correos">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.<br>La espera está animada; no se inventan pasos internos ni progreso.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La ejecución comienza al pulsar Ejecutar en la página de demos.</span></div></section>
+
+    <section class="slide slide--cream" id="slide-14" data-outline-slide="13" aria-label="Qué es realmente nuevo" hidden>
+      <div class="mast"><span>Perspectiva / 14</span><span class="kind">El cambio útil</span></div>
+      <div class="body">
+        <h2>La clasificación no es nueva.<br><span class="accent">La interfaz sí.</span></h2>
+        <div class="steps">
+          <div class="step"><b>PREGUNTA</b><strong>Especifica en el momento de la solicitud</strong><p>Estado, pregunta acotada y criterios.</p></div>
+          <div class="step"><b>RECIBE</b><strong>Juicio estructurado</strong><p>Respuestas tipadas e información de probabilidad.</p></div>
+          <div class="step"><b>COMPÓN</b><strong>Arma el flujo de trabajo en código</strong><p>Enruta, preselecciona o solicita revisión.</p></div>
+        </div>
+        <p class="small-note">La comodidad no es evidencia de que algo sea correcto; evalúa cada flujo de trabajo real.</p>
+      </div>
+      <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Documentación de TypeSafe</a></span></div>
+    </section>
+
+    <section class="slide" id="slide-15" data-outline-slide="14" aria-label="Límites y evaluación" hidden>
+      <div class="mast"><span>Polo a tierra / 15</span><span class="kind">Antes de producción</span></div>
+      <div class="body">
+        <h2>Una respuesta tipada<br>igual puede estar <span class="accent">equivocada.</span></h2>
+        <div class="checks">
+          <div><strong>Evidencia faltante</strong><p>No le pidas a un modelo que verifique hechos que no están en su entrada.</p></div>
+          <div><strong>Diseño de opciones</strong><p>La redacción, las opciones disponibles y “ninguna” afectan el juicio.</p></div>
+          <div><strong>Falsa confianza</strong><p>Prueba los errores y los umbrales de revisión con casos reservados representativos.</p></div>
+          <div><strong>Operación</strong><p>Planea para caídas, latencia, cambios de modelo, privacidad y una ruta alternativa.</p></div>
+        </div>
+      </div>
+      <div class="bottom"><span class="source">Ninguna cifra de velocidad, costo o precisión que aparece aquí se presenta como resultado medido.</span></div>
+    </section>
+
+    <section class="slide slide--blue" id="slide-16" data-outline-slide="15" aria-label="Proveedores y alternativas abiertas de modelos de decisión" hidden>
+      <div class="mast"><span>Elige tu configuración / 16</span><span class="kind">Sin comparativa</span></div>
+      <div class="body">
+        <h2>Fácil de usar. O más <span class="accent">control.</span></h2>
+        <div class="feature-grid">
+          <div class="feature"><h3>Alojados, listos para usar</h3><ul>
+            <li><strong>Jev</strong> (TypeSafe): Choice, Score y Noul.</li>
+            <li><strong>OpenAI Decisions API</strong>: choice, score y predicate · beta pública.</li>
+            <li><strong>Microsoft-Decision-1</strong> en Foundry: probabilidad por opción · preview.</li>
+          </ul><p class="small-note">Dependencias externas y propietarias.</p></div>
+          <div class="feature"><h3>Pesos abiertos, más control</h3><ul>
+            <li><strong>Cloudflare Clef y Clef-flash</strong>: Apache 2.0; también alojados en Workers AI.</li>
+            <li><strong>KEV y Laya</strong>: rutas locales o autogestionadas.</li>
+          </ul><p class="small-note">Más control también implica hacerse cargo del cómputo, la evaluación y la adaptación.</p></div>
+        </div>
+        <p class="small-note">Categoría nueva y en movimiento (octubre de 2026). Las cifras de velocidad publicadas son de cada proveedor, no medidas aquí.</p>
+      </div>
+      <div class="bottom"><span class="source"><a href="https://developers.openai.com/api/docs/guides/decisions" target="_blank" rel="noopener noreferrer">OpenAI Decisions</a> · <a href="https://blog.cloudflare.com/clef-decision-models/" target="_blank" rel="noopener noreferrer">Cloudflare Clef</a> · <a href="https://ai.azure.com/catalog/models/Microsoft-Decision-1" target="_blank" rel="noopener noreferrer">Microsoft-Decision-1</a> · <a href="https://github.com/jaredpalmer/kev" target="_blank" rel="noopener noreferrer">KEV</a> · <a href="https://brainfunctioncollapse.com/laya" target="_blank" rel="noopener noreferrer">Laya</a></span></div>
+    </section>
+
+    <section class="slide slide--dark" id="slide-17" data-outline-slide="16" aria-label="Conclusiones y preguntas" hidden>
+      <div class="mast"><span>Conclusión / 17</span><span class="kind">Preguntas y discusión</span></div>
+      <div class="body">
+        <h2>El modelo emite un<br><span class="accent">juicio.</span><br>Nosotros decidimos qué puede hacer.</h2>
+        <div class="cards">
+          <div class="card"><strong>¿Juicio acotado?</strong><p>Considera un modelo de decisión.</p></div>
+          <div class="card"><strong>¿Respuesta abierta?</strong><p>Usa un LLM generativo.</p></div>
+          <div class="card"><strong>¿Regla exacta o mucho en juego?</strong><p>Usa código, datos verificados o revisión humana.</p></div>
+        </div>
+        <p class="lead">¿Qué decisión nunca automatizarías?</p>
+      </div>
+      <div class="bottom"><span class="source"><a href="outline.html#slide-17" target="_blank" rel="noopener noreferrer">Notas del presentador y lista de fuentes</a>.</span></div>
+    </section>
+  </main>
+  <nav class="control-bar" aria-label="Controles de diapositivas">
+    <button id="previous" type="button" aria-label="Diapositiva anterior" disabled>←</button>
+    <span id="slide-counter" aria-live="polite">01 / 17</span>
+    <button id="next" type="button" aria-label="Diapositiva siguiente">→</button>
+    <a id="speaker-notes" href="outline.html#slide-1" target="_blank" rel="noopener noreferrer">Notas ↗</a>
+    <span class="control-hint">← → o espacio para navegar</span>
+  </nav>
+</body>
+</html>

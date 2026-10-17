@@ -1,0 +1,12 @@
+# Herramientas locales
+.pi/
+.claude/
+
+# Credenciales: la clave de JEV vive solo en el entorno del servidor
+.env
+.env.*
+
+# Dependencias y artefactos
+node_modules/
+*.log
+.DS_Store
