@@ -1,86 +1,126 @@
 # MedellínJS: JEV y los modelos de decisión
 
-Presentación para MedellínJS sobre JEV y los modelos de decisión, con notas del presentador y una página de demos que compara en vivo a JEV con un LLM local.
+Material de la charla «JEV y los modelos de decisión» para MedellínJS. Esta guía explica cómo ejecutar en tu máquina la presentación y los ejemplos en vivo.
 
-## Abrir la charla y las demos
+## Qué incluye
 
-Requiere Node.js 22 o superior y el Ollama instalado para esta charla. Desde esta carpeta, en dos terminales:
+- **Presentación** (`index.html`): las diapositivas de la charla, con dos demos animadas de catálogo y revisión que usan datos preparados.
+- **Notas del presentador** (`outline.html`): el guion de cada diapositiva, con tiempos, ideas clave y fuentes.
+- **Ejemplos en vivo** (`demos.html`): envían el mismo caso a JEV (TypeSafe) y a un LLM local con Ollama, y comparan sus respuestas tipadas lado a lado:
+  - **Ticket de soporte:** un ticket y tres preguntas (categoría, frustración y urgencia) en una sola petición por proveedor.
+  - **Cinco correos:** una bandeja de cinco correos y cinco preguntas de spam, también en una sola petición por proveedor.
+
+Todo es JavaScript sin dependencias: el backend usa solo APIs nativas de Node y no hay que instalar paquetes.
+
+## Requisitos
+
+- Node.js 22 o superior.
+- [Ollama](https://ollama.com/download) con el modelo `qwen3:1.7b`. Los ejemplos se probaron con Ollama 0.40.3.
+- Opcional: una clave de API de [TypeSafe](https://docs.typesafe.ai/api) para comparar con JEV. Sin ella, los ejemplos funcionan solo con el LLM local.
+- Opcional: Chromium, para las pruebas de navegador.
+
+## 1. Clonar el repositorio
+
+```sh
+git clone https://github.com/dobleuber/charla-jev.git
+```
+
+```sh
+cd charla-jev
+```
+
+## 2. Preparar el LLM local
+
+El backend se conecta a Ollama en `http://127.0.0.1:11434`. Con una instalación normal de Ollama, descarga el modelo:
+
+```sh
+ollama pull qwen3:1.7b
+```
+
+Si Ollama no corre ya como servicio, inícialo en otra terminal con `ollama serve`.
+
+<details>
+<summary>Alternativa: Ollama aislado con <code>start-ollama.sh</code></summary>
+
+`start-ollama.sh` ejecuta un binario de Ollama dedicado, sin heredar claves de proveedores ni tocar la configuración global: deshabilita cloud, usa contexto 4096 y mantiene un solo modelo cargado. Espera el binario en `~/.local/share/charla-jev/ollama/bin/ollama` (o bajo `$XDG_DATA_HOME` si está definido) y guarda los modelos en `~/.local/share/charla-jev/models`.
 
 ```sh
 bash start-ollama.sh
 ```
 
+Con el script corriendo, descarga el modelo desde otra terminal:
+
+```sh
+OLLAMA_HOST=127.0.0.1:11434 ~/.local/share/charla-jev/ollama/bin/ollama pull qwen3:1.7b
+```
+
+</details>
+
+## 3. Iniciar el servidor
+
+Solo con el LLM local:
+
 ```sh
 node demo-server.mjs
 ```
 
-- Presentación: http://127.0.0.1:8000/index.html
-- Ticket: http://127.0.0.1:8000/demos.html#ticket
-- Cinco correos: http://127.0.0.1:8000/demos.html#correos
-- Notas: http://127.0.0.1:8000/outline.html
+Para comparar también con JEV, exporta tu clave en la misma terminal e inicia el servidor con `--enable-jev`:
 
-El servidor escucha solo en loopback. Abrir `file://` muestra un aviso para cambiar a HTTP; un servidor estático no ejecuta proveedores. Usa **Precargar LLM** para cargar el modelo antes de comparar. La precarga vacía y las consultas de disponibilidad no cuentan como evaluaciones. Para detener los procesos en primer plano, pulsa Ctrl+C.
+```sh
+export TYPESAFE_API_KEY=tu-clave
+```
 
-## Habilitar JEV con la clave existente
-
-JEV está deshabilitado por defecto. Para habilitarlo, reinicia el backend desde la sesión de fish que ya exporta `TYPESAFE_API_KEY`:
-
-```fish
+```sh
 node demo-server.mjs --enable-jev
 ```
 
-La variable se lee únicamente en el proceso del servidor. No se carga `.env`, no se copia la clave a archivos ni se muestra en el navegador. La autorización permanece en el servidor. Iniciar el backend no envía evaluaciones JEV; pulsar **Ejecutar** sí puede consumir créditos. El usuario autorizó las validaciones reales de esta charla. La API informa tokens, no un importe cobrado.
+La clave se lee solo en el proceso del servidor: no se carga `.env`, no se escribe en archivos ni llega al navegador. Iniciar el servidor no envía nada a JEV; cada vez que pulsas **Ejecutar** se envía una petición que puede consumir créditos.
 
-## Cómo usar la comparación
+Otras opciones: `--local-model <nombre>` para usar otro modelo de Ollama y `--port <número>` para cambiar el puerto (por defecto, 8000). El servidor escucha solo en `127.0.0.1`.
 
-Escoge ticket o correos, elige un ejemplo claro o ambiguo y edita asunto y contenido. Ambos proveedores reciben la misma evidencia, preguntas y rúbrica. Un ticket contiene tres preguntas en una petición por proveedor; la bandeja contiene cinco correos y cinco preguntas dirigidas en una petición por proveedor.
+## 4. Abrir la presentación
 
-**Ejecutar** inicia las solicitudes HTTP de los proveedores disponibles en paralelo. Cada tarjeta muestra eventos del servidor: preparación, HTTP iniciado, espera, respuesta recibida, validación y resultado o error. La animación indica espera; no representa tokens, progreso porcentual, etapas internas ni decisiones paralelas de los modelos. SSE transmite estos eventos del backend, no texto del modelo. Los cronómetros miden la espera observada y se detienen con el resultado; los contadores acumulan evaluaciones HTTP iniciadas desde que arrancó el servidor.
+Abre http://127.0.0.1:8000/index.html. Avanza con las flechas o la barra espaciadora; el botón **Notas** abre las notas del presentador de la diapositiva actual. Las diapositivas de los ejemplos en vivo tienen un botón que abre la página de comparación.
 
-**Cancelar espera** aborta la espera del servidor. Si HTTP ya empezó, el proveedor puede procesar y cobrar la solicitud. No hay reintentos automáticos. **Actualizar** consulta el mismo identificador sin reenviar una evaluación. **Restablecer ejemplo** limpia resultados y restaura la evidencia; conserva los contadores de la sesión. Mientras se ejecuta, el editor y los controles que podrían crear otra evaluación quedan deshabilitados.
+Las notas completas están en http://127.0.0.1:8000/outline.html. La presentación también funciona sin Ollama ni JEV; solo los ejemplos en vivo los necesitan.
 
-**Ver código JS** permite consultar las solicitudes exactas, JSON Schema y funciones del módulo Node que está corriendo. Los hashes del código y de la entrada vinculan ejecución y vista previa. El código está contraído por defecto.
+## 5. Ejecutar el ejemplo del ticket
+
+1. Abre http://127.0.0.1:8000/demos.html#ticket. Arriba a la derecha verás si JEV y el LLM están disponibles.
+2. Pulsa **Precargar LLM** para cargar el modelo antes de la primera ejecución; así el tiempo medido no incluye la carga.
+3. Elige un ejemplo: **Problema claro y urgente**, **Mensaje poco preciso** o **Cobro que necesita revisión**. Puedes editar el asunto y el contenido.
+4. Pulsa **Ejecutar** (sin JEV habilitado, el botón dice **Ejecutar solo en LLM local**). Los proveedores disponibles reciben la misma evidencia, preguntas y rúbrica en paralelo. Cada tarjeta muestra los eventos reales del servidor (HTTP iniciado, respuesta recibida, validación) y, al final, las respuestas y lo que decide el código con ellas.
+5. Pulsa **Ver código JS** para ver las solicitudes exactas, el JSON Schema y las funciones del servidor que se ejecutaron.
+
+## 6. Ejecutar el ejemplo de los cinco correos
+
+1. Abre http://127.0.0.1:8000/demos.html#correos o cambia a la pestaña **Cinco correos**.
+2. Elige **Bandeja mixta** o **Promoción o conversación**, y edita los correos si quieres.
+3. Pulsa **Ejecutar**: cada proveedor responde las cinco preguntas en una sola petición.
+4. Cambia el **Corte de spam para JEV** entre 0,50 y 0,80. Los correos se reagrupan con la misma respuesta, sin enviar otra petición. El corte solo aplica a JEV: el LLM responde sí o no, sin probabilidad.
+
+**Cancelar espera** deja de esperar la respuesta, pero si la petición ya salió, el proveedor puede procesarla y cobrarla. No hay reintentos automáticos. **Restablecer ejemplo** limpia los resultados y restaura el texto original.
 
 ## Qué se compara
 
-JEV devuelve Choice con distribución y confianza, Score como media ponderada y Noul con valor 0–1. El LLM devuelve una categoría, un nivel ordinal entero y booleanos, restringidos por un JSON Schema real en `format` de Ollama. No se fabrican probabilidades del LLM. El corte de spam afecta solo a JEV; los booleanos locales se agrupan directamente.
+JEV devuelve Choice con distribución y confianza, Score como media ponderada y Noul con un valor de 0 a 1. El LLM devuelve una categoría, un nivel ordinal entero y booleanos, restringidos por un JSON Schema en el parámetro `format` de Ollama. No se fabrican probabilidades para el LLM.
 
-La validez de la estructura no demuestra acierto. Media ponderada y nivel ordinal son medidas distintas. Las reglas de aplicación son didácticas: revisar si confianza JEV < 0,7; priorizar si urgencia >= 0,8; asignar responsable si Score >= 1,5; el LLM usa sus categorías/booleanos y nivel ordinal 2. Ninguna decisión aquí ejecuta acciones externas. La latencia remota incluye red; la local incluye CPU y carga cuando corresponde. Dos casos no son un benchmark general. Temperatura cero tampoco garantiza resultados idénticos.
+Una estructura válida no demuestra que la respuesta sea correcta, y una media ponderada y un nivel ordinal son medidas distintas. Las reglas de aplicación son didácticas: revisar si la confianza de JEV es menor que 0,7, priorizar si la urgencia es al menos 0,8 y asignar responsable si Score es al menos 1,5; el LLM usa sus categorías, booleanos y el nivel ordinal 2. Ninguna decisión ejecuta acciones externas. La latencia remota incluye la red y la local depende de tu CPU. Dos casos no son un benchmark, y temperatura cero no garantiza resultados idénticos.
 
-Las animaciones preparadas de catálogo y revisión siguen en las diapositivas 9 y 10 y se identifican como simulaciones. Sus respuestas no sustituyen resultados reales.
+## Cómo funciona el backend
 
-## Runtime y validación
+`demo-server.mjs` valida un vocabulario cerrado de JSON Schema para estos ejemplos; no es una biblioteca general de validación. Rechaza campos extra, claves JSON duplicadas, números no finitos, entradas vacías o demasiado largas y respuestas incoherentes. Los resultados omiten el razonamiento interno del modelo y ocultan cualquier eco de la clave. Un token de sesión y la comprobación de origen protegen las operaciones POST.
 
-Ollama 0.40.3 usa el paquete oficial Arch `extra` CPU, verificado con SHA-256 y firma PGP. Binario dedicado: `/home/dobleuber/.local/share/charla-jev/ollama/bin/ollama`. Modelos: `/home/dobleuber/.local/share/charla-jev/models`. El wrapper excluye claves de proveedores, deshabilita cloud, usa contexto 4096 y un modelo cargado; no crea servicios ni cambia la configuración global.
+## Pruebas
 
-Modelo local: `qwen3:1.7b`, Q4_K_M; la metadata informa tamaño de parámetros `2.0B`. Huella: `8f68893c685c3ddff2aa3fffce2aa60a30bb2da65ca488b61fff134a4d1730e7`.
-
-El backend usa APIs nativas de Node, sin SDK ni instalación de paquetes. Valida un vocabulario cerrado de JSON Schema para estos ejemplos; no es una biblioteca general de validación. Rechaza campos extra, claves JSON duplicadas, números no finitos, entradas vacías o demasiado largas y respuestas incoherentes. Los resultados expuestos omiten razonamiento interno y redactan ecos de la credencial. La sesión y la comprobación de origen protegen las operaciones POST; los archivos privados no se sirven. Un identificador de ejecución ya registrado devuelve el resultado existente.
-
-Con el servidor local activo, ejecuta:
+Con el servidor activo en el puerto 8000 y Chromium instalado:
 
 ```sh
 node --test *.test.cjs *.test.mjs
 ```
 
-Las pruebas automatizadas usan proveedores simulados y servidores loopback. Chromium verifica navegación, la comparación, estados de espera/error/cancelación, doble clic, contadores, tamaño móvil, movimiento reducido y las notas de 17 diapositivas/60 minutos. Ninguna prueba automatizada general necesita créditos JEV.
+Las pruebas usan proveedores simulados y servidores locales, así que no consumen créditos de JEV ni necesitan Ollama.
 
-## Evidencia de ejecuciones
+## Referencias
 
-La validación anterior del 14 de octubre de 2026 ejecutó dos peticiones JEV desde el backend JavaScript y el modelo local: ticket JEV 395,21 ms / LLM CPU 2533,58 ms; correos JEV 327,74 ms / LLM CPU 4215,52 ms. JEV devolvió `jev-1.13.0`, con 1171 tokens de entrada y 170 de salida en total. Son observaciones funcionales de la versión anterior, no medidas de la nueva página ni una promesa de rendimiento.
-
-La evidencia anterior completa está en `/home/dobleuber/Documents/Codex/2026-10-13/task-16/jev-live-validation-20261014T150519Z/`. Las respuestas y agrupaciones difieren entre JEV y el LLM y se conservan tal como llegaron.
-
-La nueva página cuenta con un registro independiente en `/home/dobleuber/Documents/Codex/2026-10-13/task-16/demo-redesign-20261014T221305Z/live-validation/`, con identificadores, solicitudes sin credenciales, respuestas redactadas, eventos y capturas de escritorio/móvil. Consulta ese registro para los resultados del rediseño.
-
-
-Resultados de la nueva página (dos ejecuciones reales, sin reintentos):
-
-| Escenario | JEV HTTP | LLM CPU HTTP | Tokens JEV entrada/salida |
-| --- | ---: | ---: | ---: |
-| Ticket | 378,77 ms | 3469,82 ms | 498 / 71 |
-| Cinco correos | 329,79 ms | 6047,93 ms | 756 / 99 |
-
-Total: **2 peticiones JEV**, 1254 tokens de entrada y 170 de salida; no hay importe monetario informado. JEV devolvió `jev-1.13.0`. En el ticket, JEV eligió `technical` con confianza 0,55 y Score 1,95; su regla de confianza envió el caso a revisión. El LLM eligió `technical`, nivel 2 y urgencia verdadera. En correos, JEV agrupó e01/e03/e04 como spam con corte 0,50; el LLM marcó solo e03. Estos desacuerdos se conservaron sin reemplazar respuestas ni inferir precisión.
-
-Referencias oficiales: [API TypeSafe](https://docs.typesafe.ai/api), [primitivas](https://docs.typesafe.ai/primitives), [salidas estructuradas de Ollama](https://docs.ollama.com/capabilities/structured-outputs), [modelo Qwen](https://ollama.com/library/qwen3:1.7b).
+[API de TypeSafe](https://docs.typesafe.ai/api), [primitivas de JEV](https://docs.typesafe.ai/primitives), [salidas estructuradas de Ollama](https://docs.ollama.com/capabilities/structured-outputs), [modelo Qwen3 1.7B](https://ollama.com/library/qwen3:1.7b).
