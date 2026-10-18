@@ -3,7 +3,13 @@
   const $ = selector => document.querySelector(selector);
   const categories = { billing: 'Facturación', technical: 'Soporte técnico', review: 'Revisión humana' };
   const events = { preparing: 'Preparando envío', request_started: 'HTTP iniciado', waiting_response: 'Esperando respuesta', response_received: 'Respuesta recibida', schema_check: 'Validando estructura', schema_valid: 'Estructura válida', result: 'Resultados listos', error: 'No completado' };
-  let scenario = location.hash === '#correos' ? 'mail' : 'ticket';
+  const hashes = { ticket: 'ticket', mail: 'correos', photo: 'foto' }, order = ['ticket', 'mail', 'photo'];
+  const backSlides = { ticket: 11, mail: 13, photo: 14 };
+  const damageTypes = { caja: 'Daño en la caja o el empaque', producto: 'Daño en el producto', no_visible: 'No se ve daño' };
+  const routes = { review_with_evidence: 'Revisión prioritaria con la foto como evidencia', manual_review: 'Revisión manual', request_more_info: 'Pedir otra foto o más detalles' };
+  let scenario = Object.keys(hashes).find(key => location.hash === '#' + hashes[key]) ?? 'ticket';
+  // The photo demo runs on the multimodal model; text demos on the text model.
+  const localInfo = () => scenario === 'photo' ? session?.local_vision ?? session?.local : session?.local;
   let catalog, session, planInfo, activeRun = null, channel, busy = true, codeTab = 'requests', codeDirty = true;
   let shownEvents = new Set(), clockTimer, lastResult;
   function markDirty() {
@@ -46,6 +52,7 @@
       'Origin/Host rejected': 'El servidor rechazó el origen de esta página.',
       'Runner response has invalid metadata; no retry performed': 'El modelo local devolvió metadatos inválidos. No se reintentó.',
       'Invalid Jev response; no retry performed': 'JEV devolvió una respuesta inválida. No se reintentó.',
+      'Box edges are inverted': 'El recuadro devuelto tiene los bordes invertidos.',
     };
     if (translations[value]) return translations[value];
     if (/timeout|timed out|aborted due to timeout/i.test(value)) return 'Se agotó el tiempo de espera. El estado del servidor puede ser incierto; no se reintentó.';
@@ -63,36 +70,58 @@
   }
   function setBusy(value) {
     busy = value;
-    $('#execute').disabled = value || !session || (!session.local.ready && !(session.jev_enabled && session.jev_key_present));
+    $('#execute').disabled = value || !session || (!localInfo().ready && !(session.jev_enabled && session.jev_key_present));
     $('#cancel').disabled = !value || !activeRun;
     if(value && activeRun) $('#execute').textContent='Ejecutando…';
-    else if(session) $('#execute').textContent=session.local.ready && session.jev_enabled && session.jev_key_present ? '▶ Ejecutar en ambos · 1 petición por proveedor' : session.local.ready ? '▶ Ejecutar solo en LLM local' : session.jev_enabled && session.jev_key_present ? '▶ Ejecutar solo en JEV remoto' : 'Ningún proveedor disponible';
-    $('#reset').disabled = value || !catalog; $('#warmup').disabled = value || !session?.local.ready; $('#view-code').disabled = !catalog;
+    else if(session) $('#execute').textContent=executeLabel();
+    $('#reset').disabled = value || !catalog; $('#warmup').disabled = value || !localInfo()?.ready; $('#view-code').disabled = !catalog;
     document.querySelectorAll('[data-scenario], #preset, #threshold, #editor input, #editor textarea').forEach(node => { node.disabled = value; });
+  }
+  function executeLabel() {
+    const jev = session.jev_enabled && session.jev_key_present, local = localInfo().ready;
+    return jev && local ? '▶ Ejecutar en ambos · 1 petición por proveedor' : local ? '▶ Ejecutar solo en LLM local' : jev ? '▶ Ejecutar solo en JEV remoto' : 'Ningún proveedor disponible';
+  }
+  function showAvailability() {
+    const jev = session.jev_enabled && session.jev_key_present, local = localInfo();
+    $('#jev-availability').textContent = jev ? 'JEV habilitado · se comprueba al ejecutar' : 'JEV sin habilitar';
+    $('#jev-availability').classList.toggle('ready', jev);
+    $('#local-availability').textContent = local.ready ? `Ollama · ${local.model} · CPU` : local.error === 'Selected model is not installed' ? `Ollama · falta ${local.model}` : 'Ollama no disponible';
+    $('#local-availability').classList.toggle('ready', local.ready);
+    $('#session-caption').textContent = `LLM: ${local.model} · sin reintentos automáticos`;
+    $('#provider-local .provider-subtitle').textContent = scenario === 'photo' ? 'Booleanos, categoría y recuadro bbox_2d con JSON Schema' : 'Categoría · nivel ordinal · sí/no con JSON Schema';
+    $('#provider-jev .provider-subtitle').textContent = scenario === 'photo' ? 'Probabilidades · Noul · recuadro Box con confianza' : 'Probabilidades · Score ponderado · Noul';
   }
   async function availability() {
     session = await api('/api/session');
-    const jev = session.jev_enabled && session.jev_key_present;
-    $('#jev-availability').textContent = jev ? 'JEV habilitado · se comprueba al ejecutar' : 'JEV sin habilitar';
-    $('#jev-availability').classList.toggle('ready', jev);
-    $('#local-availability').textContent = session.local.ready ? 'Ollama · modelo instalado · CPU' : 'Ollama no disponible';
-    $('#local-availability').classList.toggle('ready', session.local.ready);
-    $('#execute').textContent = jev && session.local.ready ? '▶ Ejecutar en ambos · 1 petición por proveedor' : session.local.ready ? '▶ Ejecutar solo en LLM local' : jev ? '▶ Ejecutar solo en JEV remoto' : 'Ningún proveedor disponible';
+    showAvailability();
     for (const provider of ['local','jev']) $(`#provider-${provider} [data-count]`).textContent = session.counters?.[provider] ?? 0;
-    $('#session-caption').textContent = `LLM: ${session.local.model} · sin reintentos automáticos`;
     setBusy(busy);
   }
   function inputs() {
     const entries = [...document.querySelectorAll('[data-message-id]')].map(node => [node.dataset.messageId, { subject: node.querySelector('input').value, body: node.querySelector('textarea').value }]);
+    if (scenario === 'photo') return { reclamo: entries[0][1], foto: catalog.photo[$('#preset').value].state.foto };
     return scenario === 'ticket' ? { ticket: entries[0][1] } : { emails: Object.fromEntries(entries) };
+  }
+  const photoFile = key => Object.values(catalog.photo[key].assets)[0].file;
+  // The same photo goes to both providers; each draws its own box over it.
+  function photoFigure(parent, key, boxes = []) {
+    const figure = document.createElement('figure'); figure.className = 'photo-frame';
+    const image = document.createElement('img'); image.src = '/' + photoFile(key); image.alt = 'Foto adjunta al reclamo'; figure.append(image);
+    for (const { box, label } of boxes) {
+      const mark = document.createElement('div'); mark.className = 'photo-box';
+      Object.assign(mark.style, { left: `${box.left * 100}%`, top: `${box.top * 100}%`, width: `${(box.right - box.left) * 100}%`, height: `${(box.bottom - box.top) * 100}%` });
+      text(mark, 'span', label); figure.append(mark);
+    }
+    parent.append(figure); return figure;
   }
   function renderEditor() {
     const key = $('#preset').value;
     const state = catalog[scenario][key].state;
     $('#editor').replaceChildren();
-    const messages = scenario === 'ticket' ? [['ticket', state.ticket]] : Object.entries(state.emails);
+    if (scenario === 'photo') { photoFigure($('#editor'), key); text($('#editor'), 'p', `${photoFile(key)} · la misma imagen llega a ambos proveedores.`, 'helper'); }
+    const messages = scenario === 'ticket' ? [['ticket', state.ticket]] : scenario === 'photo' ? [['reclamo', state.reclamo]] : Object.entries(state.emails);
     for (const [id, message] of messages) {
-      const container = document.createElement(scenario === 'ticket' ? 'div' : 'details');
+      const container = document.createElement(scenario === 'mail' ? 'details' : 'div');
       container.dataset.messageId = id;
       if (scenario === 'mail') { container.className = 'mail-editor'; container.open = id === 'e01'; text(container, 'summary', `${id} · ${message.subject}`); }
       const subject = text(container, 'label', 'Asunto', 'field'), input = document.createElement('input'); input.value = message.subject; input.maxLength = 160; subject.append(input);
@@ -104,17 +133,21 @@
   }
   function switchScenario(next) {
     if (busy) return;
-    scenario = next; location.hash = next === 'ticket' ? 'ticket' : 'correos';
+    scenario = next; location.hash = hashes[next];
     document.querySelectorAll('[data-scenario]').forEach(node => node.setAttribute('aria-pressed', String(node.dataset.scenario === scenario)));
-    $('#back-link').href = `index.html#slide-${scenario === 'ticket' ? 11 : 13}`;
+    $('#back-link').href = `index.html#slide-${backSlides[scenario]}`;
     $('#preset').replaceChildren();
-    const labels = { clear: scenario === 'ticket' ? 'Problema claro y urgente' : 'Bandeja mixta', ambiguous: scenario === 'ticket' ? 'Mensaje poco preciso' : 'Promoción o conversación', billing: 'Cobro que necesita revisión' };
+    const labels = { clear: scenario === 'ticket' ? 'Problema claro y urgente' : 'Bandeja mixta', ambiguous: scenario === 'ticket' ? 'Mensaje poco preciso' : 'Promoción o conversación', billing: 'Cobro que necesita revisión', damaged: 'Caja golpeada', intact: 'Caja intacta', unclear: 'Foto poco clara' };
     for (const key of Object.keys(catalog[scenario])) { const option = document.createElement('option'); option.value = key; option.textContent = labels[key] ?? key; $('#preset').append(option); }
-    $('#task-title').textContent = scenario === 'ticket' ? 'Tres preguntas, una respuesta' : 'Cinco preguntas, una respuesta';
+    $('#task-title').textContent = scenario === 'ticket' ? 'Tres preguntas, una respuesta' : scenario === 'photo' ? 'Cuatro preguntas sobre una foto' : 'Cinco preguntas, una respuesta';
     $('#task-description').replaceChildren();
-    const questions = scenario === 'ticket' ? [['Categoría · Choice','Facturación, soporte técnico o revisión.'],['Frustración · Score','La misma rúbrica ordenada de 0 a 2.'],['Urgencia · Noul','¿Necesita atención hoy?']] : [['Cinco correos, una entrada','e01–e05 comparten el mismo estado.'],['Una pregunta por correo','Cada instrucción apunta a su identificador.'],['Un envío por proveedor','Las cinco respuestas llegan juntas.']];
+    const questions = scenario === 'ticket' ? [['Categoría · Choice','Facturación, soporte técnico o revisión.'],['Frustración · Score','La misma rúbrica ordenada de 0 a 2.'],['Urgencia · Noul','¿Necesita atención hoy?']]
+      : scenario === 'photo' ? [['¿Hay daño visible? · Noul','Sobre la imagen adjunta.'],['Tipo de daño · Choice','Caja, producto o no se ve.'],['¿Coincide con el reclamo? · Noul','La foto frente al texto del cliente.'],['¿Dónde está el daño? · Box','Un recuadro sobre la imagen.']]
+      : [['Cinco correos, una entrada','e01–e05 comparten el mismo estado.'],['Una pregunta por correo','Cada instrucción apunta a su identificador.'],['Un envío por proveedor','Las cinco respuestas llegan juntas.']];
     for (const [title, description] of questions) { const row = document.createElement('div'); row.className = 'task-question'; text(row,'strong',title); text(row,'span',description); $('#task-description').append(row); }
     $('#threshold-label').hidden = scenario !== 'mail'; $('#threshold-note').hidden = scenario !== 'mail';
+    $('#photo-note').hidden = scenario !== 'photo';
+    if (session) { showAvailability(); setBusy(busy); }
     renderEditor(); clearResults();
   }
   function clearResults() {
@@ -172,6 +205,25 @@
         }
         container.append(section);
       }
+    } else if (lastResult.demo === 'photo') {
+      const show = item.application.show_box, box = provider === 'jev' ? answers.ubicacion_danio.box : answers.ubicacion_danio;
+      photoFigure(container, lastResult.case, show ? [{ box, label: provider === 'jev' ? `JEV · confianza ${answers.ubicacion_danio.confidence.toFixed(2).replace('.',',')}` : 'LLM · bbox_2d' }] : []);
+      if (!show) text(container,'p','El recuadro no se dibuja: este proveedor no ve daño en la foto.','helper');
+      for (const [key, label] of [['danio_visible','¿Daño visible?'],['tipo_danio','Tipo de daño'],['coincide_con_reclamo','¿Coincide con el reclamo?'],['ubicacion_danio','Ubicación del daño']]) {
+        const section = document.createElement('section'); section.className = 'answer-card'; text(section,'h3',label);
+        const answer = answers[key];
+        if (provider === 'jev') {
+          if (key === 'tipo_danio') { text(section,'div',damageTypes[answer.choice],'answer-main'); distributions(section,answer.probabilities,damageTypes); text(section,'p',`Confianza reportada: ${answer.confidence.toFixed(2).replace('.',',')}`,'sub'); }
+          else if (key === 'ubicacion_danio') { const b = answer.box; text(section,'div',`izq ${b.left.toFixed(2)} · der ${b.right.toFixed(2)} · arriba ${b.top.toFixed(2)} · abajo ${b.bottom.toFixed(2)}`.replaceAll('.',','),'answer-main'); text(section,'p',`Bordes normalizados de 0 a 1. Confianza: ${answer.confidence.toFixed(2).replace('.',',')}. Box siempre devuelve un recuadro, aunque no haya daño.`,'sub'); }
+          else { text(section,'div',`P(sí) = ${answer.noul.toFixed(2).replace('.',',')}`,'answer-main'); text(section,'p','Valor Noul devuelto por el proveedor.','sub'); }
+        } else {
+          if (key === 'tipo_danio') text(section,'div',damageTypes[answer],'answer-main');
+          else if (key === 'ubicacion_danio') { text(section,'div',`bbox_2d [${answer.bbox_2d.join(', ')}]`,'answer-main'); text(section,'p','Coordenadas de 0 a 1000, el formato nativo de Qwen-VL; el servidor las normaliza para dibujarlas. Sin confianza.','sub'); }
+          else text(section,'div',answer ? 'Sí' : 'No','answer-main');
+          if (key !== 'ubicacion_danio') text(section,'p','Valor único. No reporta probabilidades ni confianza.','sub');
+        }
+        container.append(section);
+      }
     } else {
       for (const [key, answer] of Object.entries(answers)) {
         const id = key.replace('spam_',''), spam = provider === 'jev' ? answer.noul >= Number($('#threshold').value) : answer;
@@ -181,7 +233,8 @@
     const decision = document.createElement('div'); decision.className = 'decision-box'; text(decision,'strong','Lo que decide el código');
     let app = item.application;
     if(provider==='jev' && lastResult.demo==='mail') { const threshold=Number($('#threshold').value); app={spam:[],not_spam:[],interpretation:`Corte aplicado: ${threshold.toFixed(2).replace('.',',')}. Reagrupación de la misma respuesta; no se envió otra petición.`};for(const[key,answer]of Object.entries(answers))app[answer.noul>=threshold?'spam':'not_spam'].push(key.replace('spam_','')); }
-    if (lastResult.demo === 'ticket') text(decision,'p',`${categories[app.queue] ?? 'Revisión humana'} · ${app.priority === 'priority_review' ? 'atención prioritaria' : 'atención habitual'} · ${app.followup === 'assign_owner' ? 'asignar responsable' : 'seguimiento habitual'}.`);
+    if (lastResult.demo === 'photo') text(decision,'p',`${routes[app.route]}. Nunca se aprueba un reembolso automático.`);
+    else if (lastResult.demo === 'ticket') text(decision,'p',`${categories[app.queue] ?? 'Revisión humana'} · ${app.priority === 'priority_review' ? 'atención prioritaria' : 'atención habitual'} · ${app.followup === 'assign_owner' ? 'asignar responsable' : 'seguimiento habitual'}.`);
     else text(decision,'p',`Spam: ${app.spam.join(', ') || 'ninguno'}. No spam: ${app.not_spam.join(', ') || 'ninguno'}.`);
     if(app.interpretation) text(decision,'p',app.interpretation,'helper');
     container.append(decision);
@@ -246,13 +299,13 @@
   $('#threshold').addEventListener('change',()=>{markDirty();if(lastResult?.demo==='mail' && lastResult.providers.jev?.ok)output('jev',lastResult.providers.jev);});
   $('#view-code').addEventListener('click', async () => { try { if (codeDirty) await prepare(); $('#code-panel').open=true; $('#code-panel').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}); } catch(error) { $('#run-status').textContent=humanError(error.message); } });
   document.querySelectorAll('[data-code-tab]').forEach(node=>node.addEventListener('click',()=>{codeTab=node.dataset.codeTab;showCode();}));
-  document.querySelectorAll('[data-scenario]').forEach(node=>{node.addEventListener('click',()=>switchScenario(node.dataset.scenario));node.addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();const next=scenario==='ticket'?'mail':'ticket';switchScenario(next);$(`[data-scenario=${next}]`).focus();}});});
+  document.querySelectorAll('[data-scenario]').forEach(node=>{node.addEventListener('click',()=>switchScenario(node.dataset.scenario));node.addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();const next=order[(order.indexOf(scenario)+(event.key==='ArrowRight'?1:order.length-1))%order.length];switchScenario(next);$(`[data-scenario=${next}]`).focus();}});});
   $('#refresh').addEventListener('click',async()=>{ try { await availability(); if(activeRun)update(await api('/api/result?run_id='+encodeURIComponent(activeRun))); }catch(error){$('#run-status').textContent=humanError(error.message);} });
-  $('#warmup').addEventListener('click',async()=>{if(busy)return;setBusy(true);$('#cancel').disabled=true;$('#run-status').textContent='Precargando el LLM local. No se envía ninguna evaluación a JEV.';try{const result=await api('/api/warmup',{});$('#run-status').textContent=`Precarga local: ${formatMs(result.wall_ms)} de tiempo total. Carga del proveedor: ${formatMs(result.load_ms)}. No cuenta como solicitud de evaluación.`;}catch(error){$('#run-status').textContent=humanError(error.message);}finally{setBusy(false);} });
+  $('#warmup').addEventListener('click',async()=>{if(busy)return;setBusy(true);$('#cancel').disabled=true;$('#run-status').textContent='Precargando el LLM local. No se envía ninguna evaluación a JEV.';try{const result=await api('/api/warmup',scenario==='photo'?{demo:'photo'}:{});$('#run-status').textContent=`Precarga local: ${formatMs(result.wall_ms)} de tiempo total. Carga del proveedor: ${formatMs(result.load_ms)}. No cuenta como solicitud de evaluación.`;}catch(error){$('#run-status').textContent=humanError(error.message);}finally{setBusy(false);} });
   async function init() {
     setBusy(true);
     if(location.protocol==='file:') {
-      const url=`http://127.0.0.1:8000/demos.html#${scenario==='ticket'?'ticket':'correos'}`;
+      const url=`http://127.0.0.1:8000/demos.html#${hashes[scenario]}`;
       const notice=$('#connection-notice');notice.hidden=false;text(notice,'strong','Esta demo necesita el servidor local.');text(notice,'p','Desde la carpeta de la charla ejecuta: node demo-server.mjs. Para el modelo local: bash start-ollama.sh.');const link=text(notice,'a','Abrir la demo por HTTP');link.href=url;$('#run-status').textContent='Abriste file://. No se puede ejecutar ni consultar el backend desde esta vista.';$('#refresh').disabled=true;$('#jev-availability').textContent='JEV: requiere servidor HTTP';$('#local-availability').textContent='LLM: requiere servidor HTTP';return;
     }
     try { await availability(); catalog=await api('/api/examples'); setBusy(false); switchScenario(scenario); }

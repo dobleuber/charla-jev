@@ -199,5 +199,124 @@
         }
       }
     }
+  },
+  "photo": {
+    "damaged": {
+      "model": "jev-1.14.0",
+      "state": {
+        "reclamo": {
+          "subject": "El paquete llegó dañado",
+          "body": "Recibí el pedido con una esquina de la caja hundida y rota. Adjunto una foto. Quiero que me envíen otro."
+        },
+        "foto": "foto-reclamo-7c1e"
+      },
+      "assets": {
+        "foto-reclamo-7c1e": {
+          "type": "image",
+          "file": "fotos/caja-golpeada.jpg"
+        }
+      },
+      "questions": {
+        "danio_visible": {
+          "type": "noul",
+          "instructions": "¿La imagen en `foto` muestra daño visible en el paquete o en el producto?"
+        },
+        "tipo_danio": {
+          "type": "choice",
+          "instructions": "¿Qué daño se ve en la imagen de `foto`?",
+          "criteria": {
+            "caja": "Daño en la caja o el empaque",
+            "producto": "Daño en el producto",
+            "no_visible": "No se ve daño en la foto"
+          }
+        },
+        "coincide_con_reclamo": {
+          "type": "noul",
+          "instructions": "¿Lo que muestra la imagen en `foto` coincide con el daño que describe `reclamo.body`?"
+        },
+        "ubicacion_danio": {
+          "type": "box",
+          "instructions": "el daño más visible en la imagen de `foto`"
+        }
+      }
+    },
+    "intact": {
+      "model": "jev-1.14.0",
+      "state": {
+        "reclamo": {
+          "subject": "El paquete llegó dañado",
+          "body": "Recibí el pedido con una esquina de la caja hundida y rota. Adjunto una foto. Quiero que me envíen otro."
+        },
+        "foto": "foto-reclamo-7c1e"
+      },
+      "assets": {
+        "foto-reclamo-7c1e": {
+          "type": "image",
+          "file": "fotos/caja-intacta.jpg"
+        }
+      },
+      "questions": {
+        "danio_visible": {
+          "type": "noul",
+          "instructions": "¿La imagen en `foto` muestra daño visible en el paquete o en el producto?"
+        },
+        "tipo_danio": {
+          "type": "choice",
+          "instructions": "¿Qué daño se ve en la imagen de `foto`?",
+          "criteria": {
+            "caja": "Daño en la caja o el empaque",
+            "producto": "Daño en el producto",
+            "no_visible": "No se ve daño en la foto"
+          }
+        },
+        "coincide_con_reclamo": {
+          "type": "noul",
+          "instructions": "¿Lo que muestra la imagen en `foto` coincide con el daño que describe `reclamo.body`?"
+        },
+        "ubicacion_danio": {
+          "type": "box",
+          "instructions": "el daño más visible en la imagen de `foto`"
+        }
+      }
+    },
+    "unclear": {
+      "model": "jev-1.14.0",
+      "state": {
+        "reclamo": {
+          "subject": "El paquete llegó dañado",
+          "body": "Recibí el pedido con una esquina de la caja hundida y rota. Adjunto una foto. Quiero que me envíen otro."
+        },
+        "foto": "foto-reclamo-7c1e"
+      },
+      "assets": {
+        "foto-reclamo-7c1e": {
+          "type": "image",
+          "file": "fotos/foto-poco-clara.jpg"
+        }
+      },
+      "questions": {
+        "danio_visible": {
+          "type": "noul",
+          "instructions": "¿La imagen en `foto` muestra daño visible en el paquete o en el producto?"
+        },
+        "tipo_danio": {
+          "type": "choice",
+          "instructions": "¿Qué daño se ve en la imagen de `foto`?",
+          "criteria": {
+            "caja": "Daño en la caja o el empaque",
+            "producto": "Daño en el producto",
+            "no_visible": "No se ve daño en la foto"
+          }
+        },
+        "coincide_con_reclamo": {
+          "type": "noul",
+          "instructions": "¿Lo que muestra la imagen en `foto` coincide con el daño que describe `reclamo.body`?"
+        },
+        "ubicacion_danio": {
+          "type": "box",
+          "instructions": "el daño más visible en la imagen de `foto`"
+        }
+      }
+    }
   }
 }

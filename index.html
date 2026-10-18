@@ -201,7 +201,7 @@
 </head>
 <body>
   <aside id="file-notice" hidden style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:30;background:#05050b;color:#e4f1ff;padding:8px 14px;border:1px solid #ff2a6d;font-family:monospace;font-size:13px;max-width:90vw">Abriste un archivo local. Para las demos reales, <a href="http://127.0.0.1:8000/index.html">abre la charla por HTTP</a>.</aside>
-  <div class="progress-track" aria-hidden="true"><span id="progress" role="progressbar" aria-valuemin="1" aria-valuemax="17" aria-valuenow="1"></span></div>
+  <div class="progress-track" aria-hidden="true"><span id="progress" role="progressbar" aria-valuemin="1" aria-valuemax="18" aria-valuenow="1"></span></div>
   <main class="viewport" id="deck" aria-label="Presentación sobre JEV y los modelos de decisión">
 
     <section class="slide slide--dark" id="slide-1" aria-label="Diapositiva de título">
@@ -368,8 +368,10 @@
 
     <section class="slide " id="slide-13" data-outline-slide="12" aria-label="Abrir comparación real correos" hidden><div class="mast"><span>Demo correo en vivo / 13</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Cinco correos. Un envío.</h2><p class="lead">Cinco preguntas explícitas sobre un único lote.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>e01–e05: estado compartido</strong></div><div class="card"><span class="symbol">02</span><strong>5 respuestas en una petición</strong></div><div class="card"><span class="symbol">03</span><strong>El código agrupa con un corte</strong></div></div><a class="demo-launch" href="demos.html#correos">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.<br>La espera está animada; no se inventan pasos internos ni progreso.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La ejecución comienza al pulsar Ejecutar en la página de demos.</span></div></section>
 
-    <section class="slide slide--cream" id="slide-14" data-outline-slide="13" aria-label="Qué es realmente nuevo" hidden>
-      <div class="mast"><span>Perspectiva / 14</span><span class="kind">El cambio útil</span></div>
+    <section class="slide slide--dark" id="slide-14" data-outline-slide="13" aria-label="Abrir comparación real reclamo con foto" hidden><div class="mast"><span>Demo foto en vivo / 14</span><span class="kind">Página dedicada · experimental</span></div><div class="body"><span class="example-mark">Jev 1.14 · imágenes</span><h2 style="margin-top:1rem">Una foto. Cuatro decisiones.</h2><p class="lead">La misma imagen para JEV y un LLM multimodal local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>¿Hay daño y de qué tipo? · Noul + Choice</strong></div><div class="card"><span class="symbol">02</span><strong>¿Coincide con el reclamo? · Noul</strong></div><div class="card"><span class="symbol">03</span><strong>¿Dónde está el daño? · Box</strong></div></div><a class="demo-launch" href="demos.html#foto">Abrir la demo y comparar →</a><p class="small-note">Imágenes y Box son una función preliminar de JEV: el formato puede cambiar.<br>En CPU, el LLM local tarda decenas de segundos por cada foto nueva.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La foto es evidencia, no verificación: ningún reembolso se aprueba por lo que diga un modelo. <a href="https://docs.typesafe.ai/images" target="_blank" rel="noopener noreferrer">Imágenes en JEV</a> · <a href="https://docs.typesafe.ai/primitives/box" target="_blank" rel="noopener noreferrer">Box</a>.</span></div></section>
+
+    <section class="slide slide--cream" id="slide-15" data-outline-slide="14" aria-label="Qué es realmente nuevo" hidden>
+      <div class="mast"><span>Perspectiva / 15</span><span class="kind">El cambio útil</span></div>
       <div class="body">
         <h2>La clasificación no es nueva.<br><span class="accent">La interfaz sí.</span></h2>
         <div class="steps">
@@ -382,8 +384,8 @@
       <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Documentación de TypeSafe</a></span></div>
     </section>
 
-    <section class="slide" id="slide-15" data-outline-slide="14" aria-label="Límites y evaluación" hidden>
-      <div class="mast"><span>Polo a tierra / 15</span><span class="kind">Antes de producción</span></div>
+    <section class="slide" id="slide-16" data-outline-slide="15" aria-label="Límites y evaluación" hidden>
+      <div class="mast"><span>Polo a tierra / 16</span><span class="kind">Antes de producción</span></div>
       <div class="body">
         <h2>Una respuesta tipada<br>igual puede estar <span class="accent">equivocada.</span></h2>
         <div class="checks">
@@ -396,13 +398,13 @@
       <div class="bottom"><span class="source">Ninguna cifra de velocidad, costo o precisión que aparece aquí se presenta como resultado medido.</span></div>
     </section>
 
-    <section class="slide slide--blue" id="slide-16" data-outline-slide="15" aria-label="Proveedores y alternativas abiertas de modelos de decisión" hidden>
-      <div class="mast"><span>Elige tu configuración / 16</span><span class="kind">Sin comparativa</span></div>
+    <section class="slide slide--blue" id="slide-17" data-outline-slide="16" aria-label="Proveedores y alternativas abiertas de modelos de decisión" hidden>
+      <div class="mast"><span>Elige tu configuración / 17</span><span class="kind">Sin comparativa</span></div>
       <div class="body">
         <h2>Fácil de usar. O más <span class="accent">control.</span></h2>
         <div class="feature-grid">
           <div class="feature"><h3>Alojados, listos para usar</h3><ul>
-            <li><strong>Jev</strong> (TypeSafe): Choice, Score y Noul.</li>
+            <li><strong>Jev</strong> (TypeSafe): Choice, Score, Noul y Box, también con imágenes.</li>
             <li><strong>OpenAI Decisions API</strong>: choice, score y predicate · beta pública.</li>
             <li><strong>Microsoft-Decision-1</strong> en Foundry: probabilidad por opción · preview.</li>
           </ul><p class="small-note">Dependencias externas y propietarias.</p></div>
@@ -416,8 +418,8 @@
       <div class="bottom"><span class="source"><a href="https://developers.openai.com/api/docs/guides/decisions" target="_blank" rel="noopener noreferrer">OpenAI Decisions</a> · <a href="https://blog.cloudflare.com/clef-decision-models/" target="_blank" rel="noopener noreferrer">Cloudflare Clef</a> · <a href="https://ai.azure.com/catalog/models/Microsoft-Decision-1" target="_blank" rel="noopener noreferrer">Microsoft-Decision-1</a> · <a href="https://github.com/jaredpalmer/kev" target="_blank" rel="noopener noreferrer">KEV</a> · <a href="https://brainfunctioncollapse.com/laya" target="_blank" rel="noopener noreferrer">Laya</a></span></div>
     </section>
 
-    <section class="slide slide--dark" id="slide-17" data-outline-slide="16" aria-label="Conclusiones y preguntas" hidden>
-      <div class="mast"><span>Conclusión / 17</span><span class="kind">Preguntas y discusión</span></div>
+    <section class="slide slide--dark" id="slide-18" data-outline-slide="17" aria-label="Conclusiones y preguntas" hidden>
+      <div class="mast"><span>Conclusión / 18</span><span class="kind">Preguntas y discusión</span></div>
       <div class="body">
         <h2>El modelo emite un<br><span class="accent">juicio.</span><br>Nosotros decidimos qué puede hacer.</h2>
         <div class="cards">
@@ -427,12 +429,12 @@
         </div>
         <p class="lead">¿Qué decisión nunca automatizarías?</p>
       </div>
-      <div class="bottom"><span class="source"><a href="outline.html#slide-17" target="_blank" rel="noopener noreferrer">Notas del presentador y lista de fuentes</a>.</span></div>
+      <div class="bottom"><span class="source"><a href="outline.html#slide-18" target="_blank" rel="noopener noreferrer">Notas del presentador y lista de fuentes</a>.</span></div>
     </section>
   </main>
   <nav class="control-bar" aria-label="Controles de diapositivas">
     <button id="previous" type="button" aria-label="Diapositiva anterior" disabled>←</button>
-    <span id="slide-counter" aria-live="polite">01 / 17</span>
+    <span id="slide-counter" aria-live="polite">01 / 18</span>
     <button id="next" type="button" aria-label="Diapositiva siguiente">→</button>
     <a id="speaker-notes" href="outline.html#slide-1" target="_blank" rel="noopener noreferrer">Notas ↗</a>
     <span class="control-hint">← → o espacio para navegar</span>

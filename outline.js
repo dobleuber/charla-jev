@@ -106,7 +106,7 @@ const agenda = [
     "end": 22,
     "title": "07 · Demo 1, parte A: un ticket, tres preguntas tipadas",
     "visual": "Diapositivas 7–8 para el público: el estado del ticket y un único cuerpo POST con category, frustration y urgency.",
-    "speaker": "Lee en voz alta el ticket sintético. Envíalo una sola vez como state.ticket y pon tres preguntas en el mismo mapa questions. category es un Choice entre billing, technical y review. frustration es un Score sobre tres niveles descritos, de calmado a muy enojado. urgency es un Noul que pregunta si el ticket necesita atención hoy. Estas preguntas comparten el estado, pero son juicios independientes. Las claves identifican las respuestas devueltas; las instrucciones dicen qué juzgar. Esta solicitud sigue la interfaz documentada de la API. Las diapositivas 11 y 13 abren la página de comparación; las ejecutaremos en vivo después de las dos simulaciones. Allí puedes editar el texto, ejecutar ambos proveedores y consultar sus resultados lado a lado. Los eventos corresponden al transporte y la validación del servidor. Las simulaciones preparadas se conservan solo para los flujos de catálogo y revisión. Para MedellínJS, muestra la implementación en Node.js: fetch nativo, async/await, validación y reglas de aplicación en JavaScript plano. No se necesita ningún SDK. Ver código muestra las funciones del módulo JavaScript en ejecución. La ejecución real ahora está en demos.html: abre la comparación desde las diapositivas 11 o 13, edita la evidencia y pulsa Ejecutar. Los estados provienen de eventos HTTP y validación, no de pasos internos. Cada proveedor recibe una petición con todas sus preguntas.",
+    "speaker": "Lee en voz alta el ticket sintético. Envíalo una sola vez como state.ticket y pon tres preguntas en el mismo mapa questions. category es un Choice entre billing, technical y review. frustration es un Score sobre tres niveles descritos, de calmado a muy enojado. urgency es un Noul que pregunta si el ticket necesita atención hoy. Estas preguntas comparten el estado, pero son juicios independientes. Las claves identifican las respuestas devueltas; las instrucciones dicen qué juzgar. Esta solicitud sigue la interfaz documentada de la API. Las diapositivas 11, 13 y 14 abren la página de comparación; las ejecutaremos en vivo después de las dos simulaciones. Allí puedes editar el texto, ejecutar ambos proveedores y consultar sus resultados lado a lado. Los eventos corresponden al transporte y la validación del servidor. Las simulaciones preparadas se conservan solo para los flujos de catálogo y revisión. Para MedellínJS, muestra la implementación en Node.js: fetch nativo, async/await, validación y reglas de aplicación en JavaScript plano. No se necesita ningún SDK. Ver código muestra las funciones del módulo JavaScript en ejecución. La ejecución real ahora está en demos.html: abre la comparación desde las diapositivas 11, 13 o 14, edita la evidencia y pulsa Ejecutar. Los estados provienen de eventos HTTP y validación, no de pasos internos. Cada proveedor recibe una petición con todas sus preguntas.",
     "points": [
       "Muestra un modelo, un estado y un mapa questions en una sola solicitud POST /v1/systemone.",
       "Mantén las claves category, frustration y urgency idénticas en el payload, la respuesta, la animación y el código de la aplicación.",
@@ -219,7 +219,7 @@ const agenda = [
     "end": 36,
     "title": "11 · Extensión de correo, parte A: cinco correos en un estado",
     "visual": "Diapositiva 12 para el público: cinco correos sintéticos identificados a la izquierda; las cinco preguntas Noul y sus rutas objetivo a la derecha.",
-    "speaker": "Es el mismo patrón de API de estado más preguntas, aplicado a una colección. Construye un objeto de estado con emails.e01 a emails.e05. Luego define cinco preguntas Noul en un mismo mapa questions. Cada pregunta tiene una instrucción que nombra explícitamente su ruta objetivo, por ejemplo emails.e01. Una clave como spam_e01 por sí sola no basta: los IDs de pregunta son para el código y no se envían al modelo. Las cinco preguntas ven todo el estado compartido, así que las instrucciones indican juzgar solo el correo nombrado. Envía todo este payload en un solo POST. Esto respalda el patrón; no garantiza que un modelo nunca confunda entradas ni que aumentar el tamaño del lote salga gratis. Para MedellínJS, muestra la implementación en Node.js: fetch nativo, async/await, validación y reglas de aplicación en JavaScript plano. No se necesita ningún SDK. Ver código muestra las funciones del módulo JavaScript en ejecución. La ejecución real ahora está en demos.html: abre la comparación desde las diapositivas 11 o 13, edita la evidencia y pulsa Ejecutar. Los estados provienen de eventos HTTP y validación, no de pasos internos. Cada proveedor recibe una petición con todas sus preguntas.",
+    "speaker": "Es el mismo patrón de API de estado más preguntas, aplicado a una colección. Construye un objeto de estado con emails.e01 a emails.e05. Luego define cinco preguntas Noul en un mismo mapa questions. Cada pregunta tiene una instrucción que nombra explícitamente su ruta objetivo, por ejemplo emails.e01. Una clave como spam_e01 por sí sola no basta: los IDs de pregunta son para el código y no se envían al modelo. Las cinco preguntas ven todo el estado compartido, así que las instrucciones indican juzgar solo el correo nombrado. Envía todo este payload en un solo POST. Esto respalda el patrón; no garantiza que un modelo nunca confunda entradas ni que aumentar el tamaño del lote salga gratis. Para MedellínJS, muestra la implementación en Node.js: fetch nativo, async/await, validación y reglas de aplicación en JavaScript plano. No se necesita ningún SDK. Ver código muestra las funciones del módulo JavaScript en ejecución. La ejecución real ahora está en demos.html: abre la comparación desde las diapositivas 11, 13 o 14, edita la evidencia y pulsa Ejecutar. Los estados provienen de eventos HTTP y validación, no de pasos internos. Cada proveedor recibe una petición con todas sus preguntas.",
     "points": [
       "Un estado contiene los cinco correos identificados; un mapa questions contiene exactamente cinco preguntas Noul.",
       "Cada instrucción nombra explícitamente la ruta de su propio correo, en lugar de depender del ID de la pregunta.",
@@ -262,7 +262,7 @@ const agenda = [
       "caveat": "La página realiza llamadas reales. Los valores del extracto en estas notas son ilustrativos y el corte no está calibrado para producción. Dos casos no demuestran precisión, velocidad ni ahorro generales."
     },
     "code": "// Respuesta ilustrativa; se omiten modelo y consumo.\nconst response = {\n  \"answers\": {\n    \"spam_e01\": {\n      \"type\": \"noul\",\n      \"noul\": 0.98\n    },\n    \"spam_e02\": {\n      \"type\": \"noul\",\n      \"noul\": 0.04\n    },\n    \"spam_e03\": {\n      \"type\": \"noul\",\n      \"noul\": 0.96\n    },\n    \"spam_e04\": {\n      \"type\": \"noul\",\n      \"noul\": 0.55\n    },\n    \"spam_e05\": {\n      \"type\": \"noul\",\n      \"noul\": 0.08\n    }\n  }\n};\n\nconst threshold = 0.5; // ejemplo didáctico; política sin validar\nconst groups = { spam: [], notSpam: [] };\nfor (const id of Object.keys(request.state.emails)) {\n  const a = response.answers[\"spam_\" + id];\n  if (a?.type !== \"noul\" || !Number.isFinite(a.noul) || a.noul < 0 || a.noul > 1)\n    throw new Error(\"Revisar respuesta ausente o inválida de \" + id);\n  groups[a.noul >= threshold ? \"spam\" : \"notSpam\"].push(id);\n}\n// Con corte 0,50: spam=[e01,e03,e04]; notSpam=[e02,e05]\n// Con corte 0,80: spam=[e01,e03]; notSpam=[e02,e04,e05]",
-    "transition": "Ya vimos respuestas reales, con sus coincidencias y desacuerdos; ahora separemos qué es realmente nuevo y qué no.",
+    "transition": "Ahora cambiemos el texto por una imagen: la misma interfaz de preguntas, con una foto como evidencia.",
     "sources": [
       {
         "label": "Varias preguntas en una solicitud",
@@ -276,8 +276,41 @@ const agenda = [
   },
   {
     "start": 40,
-    "end": 43,
-    "title": "13 · ¿Qué es realmente nuevo aquí?",
+    "end": 44,
+    "title": "13 · Demo con foto en vivo: una imagen como evidencia",
+    "visual": "Diapositiva 14: enlace a la página del reclamo con foto; la misma imagen va a JEV y a un LLM multimodal local, y cada uno dibuja su recuadro sobre ella.",
+    "speaker": "Abre demos.html#foto desde la diapositiva 14. Lee el reclamo: el cliente dice que la caja llegó con una esquina hundida y rota. La foto viaja a ambos proveedores con cuatro preguntas: si hay daño visible (Noul), de qué tipo (Choice), si coincide con lo que describe el reclamo (Noul) y dónde está (Box). Pulsa Precargar LLM antes, porque el modelo multimodal local tarda decenas de segundos en procesar cada foto nueva en CPU; JEV responde mientras tanto. Compara los recuadros dibujados sobre la misma imagen: JEV devuelve bordes de 0 a 1 con confianza y el LLM devuelve bbox_2d de 0 a 1000, su formato nativo, sin confianza. Box siempre devuelve un recuadro aunque no haya daño; por eso el código solo lo dibuja si la pregunta de daño visible lo respalda. Cambia a Caja intacta para mostrar un reclamo que la foto no respalda: el código pide otra foto o más detalles. En ningún caso se aprueba un reembolso automático. Las imágenes y Box son una función preliminar de JEV y su formato puede cambiar.",
+    "points": [
+      "La misma imagen llega a ambos proveedores; cada uno responde en su forma nativa y el servidor solo normaliza el recuadro del LLM para dibujarlo.",
+      "Box nunca dice que no encontró nada: combínalo con una pregunta Noul de presencia antes de usar el recuadro.",
+      "Una foto que coincide con el reclamo prioriza la revisión; no verifica el daño ni autoriza un reembolso.",
+      "Función preliminar: fija la versión del modelo (jev-1.14.0) y ten una ejecución guardada por si la API cambia antes de la charla."
+    ],
+    "demo": {
+      "input": "Tres fotos preparadas del mismo reclamo: caja golpeada, caja intacta y foto poco clara; el texto del reclamo es editable.",
+      "reveal": "Muestra los dos recuadros sobre la foto, la distribución de Choice de JEV frente a la categoría del LLM, y la ruta que decide el código. En Ver código JS, la imagen aparece resumida por tamaño y hash, no como base64.",
+      "caveat": "Tres fotos no son un benchmark de visión. El tiempo del LLM local depende de la CPU, y la precisión de Box no está medida aquí."
+    },
+    "transition": "Ya vimos respuestas reales con texto e imágenes, con sus coincidencias y desacuerdos; ahora separemos qué es realmente nuevo y qué no.",
+    "sources": [
+      {
+        "label": "Imágenes en JEV",
+        "url": "https://docs.typesafe.ai/images"
+      },
+      {
+        "label": "Preguntas Box",
+        "url": "https://docs.typesafe.ai/primitives/box"
+      },
+      {
+        "label": "Qwen3-VL en Ollama",
+        "url": "https://ollama.com/library/qwen3-vl"
+      }
+    ]
+  },
+  {
+    "start": 44,
+    "end": 47,
+    "title": "14 · ¿Qué es realmente nuevo aquí?",
     "visual": "Resalta el contrato reutilizable: estado + preguntas tipadas → resultados estructurados; anota 'no es una nueva definición de clasificación'.",
     "speaker": "Lo novedoso y útil no es que las máquinas puedan clasificar tickets; llevan años haciéndolo. El cambio está en la ergonomía de una interfaz de decisión general: definir juicios pequeños y tipados en el momento de la solicitud, hacer varias preguntas relacionadas sobre el mismo estado y componer las respuestas en código. Esto permite experimentar rápido con nuevos flujos de trabajo sin construir un modelo entrenado aparte para cada conjunto de etiquetas. Esa comodidad no reemplaza la evaluación específica de la tarea ni garantiza una calibración confiable.",
     "points": [
@@ -294,9 +327,9 @@ const agenda = [
     ]
   },
   {
-    "start": 43,
-    "end": 46,
-    "title": "14 · Limitaciones, modos de falla y evaluación",
+    "start": 47,
+    "end": 50,
+    "title": "15 · Limitaciones, modos de falla y evaluación",
     "visual": "Lista de verificación con cuatro riesgos: evidencia faltante; redacción de las opciones; incertidumbre calibrada; fallas operativas.",
     "speaker": "Primero, un modelo no puede verificar hechos que no recibió: los campos faltantes y los detalles de producto inventados siguen siendo un problema. Segundo, la redacción y el conjunto de candidatos afectan las elecciones. Tercero, una probabilidad o una confianza reportada no es un SLA listo para usar; prueba con casos etiquetados representativos y examina falsos positivos, falsos negativos, calibración y cobertura en el umbral de revisión que elijas. Por último, ten en cuenta la latencia, el precio, el manejo de datos, las caídas del proveedor y los cambios de versión del modelo. Documenta una ruta a prueba de fallas y revisa los errores después del lanzamiento.",
     "points": [
@@ -307,9 +340,9 @@ const agenda = [
     "transition": "Esas necesidades operativas también influyen en qué modelo de despliegue tiene sentido."
   },
   {
-    "start": 46,
-    "end": 48,
-    "title": "15 · Más proveedores y otras formas de ser dueño de la capa de decisión",
+    "start": 50,
+    "end": 52,
+    "title": "16 · Más proveedores y otras formas de ser dueño de la capa de decisión",
     "visual": "Dos columnas: servicios alojados (Jev, OpenAI Decisions API, Microsoft-Decision-1) y rutas con pesos abiertos o autogestionadas (Cloudflare Clef y Clef-flash, KEV, Laya), sin tabla de ranking.",
     "speaker": "Jev nos sirvió como camino alojado para esta charla, pero ya no está solo. En octubre de 2026 OpenAI abrió en beta pública su Decisions API, con preguntas choice, score y predicate sobre texto o imágenes; Microsoft publicó Microsoft-Decision-1 en Foundry, en preview, que devuelve una probabilidad por opción; y Cloudflare lanzó Clef y Clef-flash, con pesos abiertos bajo Apache 2.0, alojados en Workers AI y, según Cloudflare, compatibles con la API de Jev. Si una API externa cerrada no es aceptable, Clef, KEV y Laya ofrecen rutas para ejecutar modelos de decisión bajo tu propio control. Ese control también implica encargarse del cómputo, el serving, las actualizaciones, la evaluación y, cuando la tarea lo requiera, la adaptación con ejemplos etiquetados. Hoy no vamos a comparar sus puntajes: las cifras de velocidad y precisión que publica cada proveedor son propias y no las medimos aquí. Esta hora es para entender el patrón de los modelos de decisión, que ahora ofrecen varios proveedores.",
     "points": [
@@ -343,9 +376,9 @@ const agenda = [
     ]
   },
   {
-    "start": 48,
-    "end": 50,
-    "title": "16 · Cuándo usarlo: un árbol de decisión para cerrar",
+    "start": 52,
+    "end": 54,
+    "title": "17 · Cuándo usarlo: un árbol de decisión para cerrar",
     "visual": "¿Necesitas un juicio acotado? → modelo de decisión. ¿Necesitas prosa? → LLM. ¿Regla exacta? → código. ¿Mucho en juego? → proceso humano/verificado.",
     "speaker": "Usa un modelo de decisión cuando una aplicación necesita un juicio acotado y repetido sobre evidencia compleja y puede revisar su salida antes de actuar. Usa un clasificador convencional específico para la tarea si la estabilidad de la tarea, los datos, el costo y la evaluación lo hacen más adecuado. Usa un LLM para generación o razonamiento abierto, y código para políticas exactas. En flujos de riesgo, la salida correcta suele ser una recomendación para un revisor. Cierra retomando el ticket del inicio: la máquina puede juzgar quién debería mirarlo primero; la responsabilidad de lo que pasa después sigue siendo del sistema que diseñamos.",
     "points": [
@@ -356,9 +389,9 @@ const agenda = [
     "transition": "Abre el espacio a preguntas; si no hay, retoma un caso ambiguo de las demos."
   },
   {
-    "start": 50,
-    "end": 60,
-    "title": "17 · Preguntas, objeciones y preguntas de respaldo opcionales",
+    "start": 54,
+    "end": 64,
+    "title": "18 · Preguntas, objeciones y preguntas de respaldo opcionales",
     "visual": "Vuelve al ticket y a la colección de correos. Usa los dos patrones de solicitud para abrir la discusión.",
     "speaker": "Deja diez minutos para preguntas en lugar de llenar la hora con más diapositivas. Si la discusión arranca lenta, pregunta qué decisiones en los propios sistemas del público son lo bastante acotadas para exponerse como preguntas tipadas, cuáles necesitan datos de fuentes autorizadas más allá del texto y qué error saldría más caro. Si alguien pregunta por el control local, menciona KEV y Laya como posibles rumbos prácticos a futuro. No improvises comparaciones de rendimiento ni afirmaciones sobre entrenamiento sin respaldo; las fuentes primarias enlazadas sirven para hacer seguimiento.",
     "points": [
@@ -407,7 +440,7 @@ function renderAgenda(slides) {
     const code = slide.code ? `<pre><code>${escapeHtml(slide.code)}</code></pre>` : "";
     const sources = slide.sources?.length ? `<p class="sources"><strong>Fuentes:</strong> ${slide.sources.map((source) => `<a href="${escapeHtml(source.url)}" target="_blank" rel="noopener noreferrer">${escapeHtml(source.label)}</a>`).join(" · ")}</p>` : "";
     return `<article class="agenda-card" id="slide-${index + 1}">
-      <div class="agenda-time"><span>${formatTime(slide.start)}–${formatTime(slide.end)}</span><span>${slide.end - slide.start} min · Diapositiva ${index === 6 ? "7–8" : index === 16 ? "17 · preguntas" : index >= 7 ? index + 2 : index + 1}</span></div>
+      <div class="agenda-time"><span>${formatTime(slide.start)}–${formatTime(slide.end)}</span><span>${slide.end - slide.start} min · Diapositiva ${index === 6 ? "7–8" : index === slides.length - 1 ? `${index + 1} · preguntas` : index >= 7 ? index + 2 : index + 1}</span></div>
       <div class="agenda-content"><h3>${escapeHtml(slide.title)}</h3><p class="visual"><strong>En pantalla:</strong> ${escapeHtml(slide.visual)}</p>
         <details open><summary>Notas y puntos para conversar</summary>
           <h4>Notas</h4><p class="speaker">${escapeHtml(slide.speaker)}</p>

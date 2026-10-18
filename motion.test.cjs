@@ -18,7 +18,7 @@ test('flow paths animate while reduced-motion and print preserve complete inform
     await step();
     assert.equal(await evaluate('document.querySelector("#slide-9 .outcome.is-selected").dataset.key'), 'A');
     await command('Emulation.setEmulatedMedia', { media: 'print', features: [] });
-    assert.equal(await evaluate('[...document.querySelectorAll(".slide")].filter(el => getComputedStyle(el).display !== "none").length'), 17);
+    assert.equal(await evaluate('[...document.querySelectorAll(".slide")].filter(el => getComputedStyle(el).display !== "none").length'), 18);
     assert.equal(await evaluate('getComputedStyle(document.querySelector("#slide-9 .decision-action")).visibility'), 'visible');
     assert.equal(await evaluate('getComputedStyle(document.querySelector("#slide-9 .demo-toolbar")).display'), 'none');
   });

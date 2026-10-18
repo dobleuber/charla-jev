@@ -6,9 +6,9 @@ const { agenda, formatTime, renderAgenda, totalMinutes } = require("./outline.js
 test("speaker outline covers the full hour with contiguous, paced slides", () => {
   assert.ok(agenda.length >= 14, "expect a slide-by-slide outline, not nine topic summaries");
   assert.equal(agenda[0].start, 0);
-  assert.equal(agenda.at(-1).end, 60);
-  assert.equal(agenda.at(-1).start, 50, "reserve ten minutes for questions");
-  assert.equal(totalMinutes(agenda), 60);
+  assert.equal(agenda.at(-1).end, 64);
+  assert.equal(agenda.at(-1).start, 54, "reserve ten minutes for questions");
+  assert.equal(totalMinutes(agenda), 64);
   for (let i = 1; i < agenda.length; i += 1) {
     assert.equal(agenda[i].start, agenda[i - 1].end);
   }

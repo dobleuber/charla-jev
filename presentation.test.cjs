@@ -28,10 +28,10 @@ test('hash-based navigation accepts only in-range slide numbers', () => {
 
 test('browser renders a deck, displaying one audience-facing slide at a time', () => {
   const dom = browserDom();
-  assert.equal((dom.match(/<section[^>]*class="slide(?: [^"]*)?"/g) || []).length, 17);
+  assert.equal((dom.match(/<section[^>]*class="slide(?: [^"]*)?"/g) || []).length, 18);
   assert.doesNotMatch(slideTag(dom, 1), /\shidden(?:[\s=>]|$)/);
   assert.match(slideTag(dom, 2), /\shidden(?:[\s=>]|$)/);
-  assert.match(dom, /id="slide-counter"[^>]*>\s*01 \/ 17/);
+  assert.match(dom, /id="slide-counter"[^>]*>\s*01 \/ 18/);
   assert.match(dom, /id="progress"/);
 });
 
@@ -39,7 +39,7 @@ test('opening a deep link displays that slide and updates the counter', () => {
   const dom = browserDom('#slide-8');
   assert.match(slideTag(dom, 1), /\shidden(?:[\s=>]|$)/);
   assert.doesNotMatch(slideTag(dom, 8), /\shidden(?:[\s=>]|$)/);
-  assert.match(dom, /id="slide-counter"[^>]*>\s*08 \/ 17/);
+  assert.match(dom, /id="slide-counter"[^>]*>\s*08 \/ 18/);
 });
 
 test('notes button links to the matching detailed outline topic', () => {

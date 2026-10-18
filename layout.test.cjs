@@ -8,7 +8,7 @@ test('all slides fit horizontally at desktop, tablet and narrow mobile widths', 
     const problems = [];
     for (const [width, height] of [[1365, 768], [1024, 768], [390, 844], [320, 740]]) {
       await resize(width, height);
-      for (let number = 1; number <= 17; number++) {
+      for (let number = 1; number <= 18; number++) {
         await go(number);
         const result = await evaluate(`(() => {
           const slide = document.querySelector('.slide:not([hidden])');
