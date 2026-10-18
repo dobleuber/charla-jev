@@ -306,10 +306,10 @@
     setBusy(true);
     if(location.protocol==='file:') {
       const url=`http://127.0.0.1:8000/demos.html#${hashes[scenario]}`;
-      const notice=$('#connection-notice');notice.hidden=false;text(notice,'strong','Esta demo necesita el servidor local.');text(notice,'p','Desde la carpeta de la charla ejecuta: node demo-server.mjs. Para el modelo local: bash start-ollama.sh.');const link=text(notice,'a','Abrir la demo por HTTP');link.href=url;$('#run-status').textContent='Abriste file://. No se puede ejecutar ni consultar el backend desde esta vista.';$('#refresh').disabled=true;$('#jev-availability').textContent='JEV: requiere servidor HTTP';$('#local-availability').textContent='LLM: requiere servidor HTTP';return;
+      const notice=$('#connection-notice');notice.hidden=false;text(notice,'strong','Esta demo necesita el servidor local.');text(notice,'p','Desde la carpeta de la charla ejecuta: npm start. Levanta el servidor y el LLM local.');const link=text(notice,'a','Abrir la demo por HTTP');link.href=url;$('#run-status').textContent='Abriste file://. No se puede ejecutar ni consultar el backend desde esta vista.';$('#refresh').disabled=true;$('#jev-availability').textContent='JEV: requiere servidor HTTP';$('#local-availability').textContent='LLM: requiere servidor HTTP';return;
     }
     try { await availability(); catalog=await api('/api/examples'); setBusy(false); switchScenario(scenario); }
-    catch { const notice=$('#connection-notice');notice.hidden=false;text(notice,'strong','No se pudo conectar al servidor local.');text(notice,'p','Ejecuta node demo-server.mjs desde la carpeta de la charla y abre http://127.0.0.1:8000/demos.html.');$('#run-status').textContent='No se enviaron solicitudes a los proveedores.'; }
+    catch { const notice=$('#connection-notice');notice.hidden=false;text(notice,'strong','No se pudo conectar al servidor local.');text(notice,'p','Ejecuta npm start desde la carpeta de la charla y abre http://127.0.0.1:8000/demos.html.');$('#run-status').textContent='No se enviaron solicitudes a los proveedores.'; }
   }
   init();
 })();

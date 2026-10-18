@@ -10,45 +10,39 @@ Desde la carpeta del proyecto:
 npm start
 ```
 
-Abre http://127.0.0.1:8000/index.html. Avanza con las flechas o la barra espaciadora; el botón **Notas** abre las notas del presentador de la diapositiva actual, y las notas completas están en http://127.0.0.1:8000/outline.html. Para detener el servidor, pulsa Ctrl+C.
+Ese único comando levanta todo lo que la charla necesita:
 
-Para ver las diapositivas no necesitas Ollama ni una clave de JEV. Solo hacen falta para ejecutar las demos en vivo.
+- **Ollama**, para el LLM local de las demos. Si ya está corriendo, lo reutiliza; si no, inicia el Ollama aislado de la charla (ver más abajo) o el `ollama` del sistema.
+- **El servidor** de la presentación, las notas y las demos.
+- **JEV**, solo si exportaste `TYPESAFE_API_KEY` antes de arrancar.
 
-## Presentar con las demos en vivo
+Abre http://127.0.0.1:8000/index.html. Avanza con las flechas o la barra espaciadora; el botón **Notas** abre las notas del presentador de la diapositiva actual, y las notas completas están en http://127.0.0.1:8000/outline.html. Ctrl+C detiene todo lo que `npm start` haya iniciado.
 
-Las diapositivas de las demos en vivo tienen un botón **Abrir la demo y comparar** que abre la página de comparación. Para que esas demos ejecuten de verdad, arranca dos procesos en terminales separadas (la primera vez, sigue antes [Preparar las demos en vivo](#preparar-las-demos-en-vivo)):
+Las diapositivas de las demos en vivo tienen un botón **Abrir la demo y comparar** que abre la página de comparación. En cada demo, pulsa **Precargar LLM** antes de **Ejecutar**.
 
-1. El LLM local:
+Para comparar también con JEV, exporta tu clave antes de arrancar:
 
-   ```sh
-   npm run ollama
-   ```
+```sh
+export TYPESAFE_API_KEY=tu-clave
+```
 
-2. El servidor con JEV habilitado, en una terminal que tenga exportada tu clave:
+```sh
+npm start
+```
 
-   ```sh
-   export TYPESAFE_API_KEY=tu-clave
-   ```
+Iniciar el servidor no envía nada a JEV; cada vez que pulsas **Ejecutar** se envía una petición que puede consumir créditos. Para arrancar sin JEV aunque la clave esté exportada: `npm start -- --sin-jev`.
 
-   ```sh
-   npm run start:jev
-   ```
-
-3. Abre http://127.0.0.1:8000/index.html y presenta. En cada demo, pulsa **Precargar LLM** antes de **Ejecutar**.
-
-Sin clave, `npm start` también sirve las demos, pero solo con el LLM local. Iniciar el servidor no envía nada a JEV; cada vez que pulsas **Ejecutar** se envía una petición que puede consumir créditos.
+Las diapositivas se ven sin Ollama ni JEV; solo las demos en vivo los necesitan. Si falta algún modelo, `npm start` lo avisa al arrancar.
 
 ## Comandos
 
 | Comando | Qué hace |
 | --- | --- |
-| `npm start` | Sirve la presentación, las notas y las demos (solo con el LLM local). |
-| `npm run start:jev` | Lo mismo, con JEV habilitado. Requiere `TYPESAFE_API_KEY` en el entorno. |
-| `npm run ollama` | Inicia el Ollama aislado de la charla (`start-ollama.sh`). |
-| `npm run ollama:modelos` | Descarga en ese Ollama los modelos de las demos. Requiere `npm run ollama` corriendo. |
-| `npm test` | Ejecuta las pruebas. Requiere el servidor activo en el puerto 8000 y Chromium. |
+| `npm start` | Levanta Ollama (si hace falta), el servidor y, si hay clave, JEV. |
+| `npm run modelos` | Descarga los modelos de las demos. Inicia Ollama si no está corriendo. |
+| `npm test` | Ejecuta las pruebas. Requiere `npm start` activo en el puerto 8000 y Chromium. |
 
-El servidor acepta además `--port <número>`, `--local-model <nombre>` y `--vision-model <nombre>`; por ejemplo, `npm start -- --port 8080`. Escucha solo en `127.0.0.1`.
+`npm start` también acepta `--port <número>`, `--local-model <nombre>` y `--vision-model <nombre>`; por ejemplo, `npm start -- --port 8080`. El servidor escucha solo en `127.0.0.1`.
 
 ## Qué incluye
 
@@ -73,28 +67,20 @@ Solo hace falta una vez.
    cd charla-jev
    ```
 
-2. Instala [Ollama](https://ollama.com/download) (se probó con la versión 0.40.3) y descarga los dos modelos: `qwen3:1.7b` para el texto y `qwen3-vl:2b-instruct` para la foto. Con una instalación normal de Ollama:
+2. Instala [Ollama](https://ollama.com/download) (se probó con la versión 0.40.3).
+
+3. Descarga los dos modelos de las demos, `qwen3:1.7b` para el texto y `qwen3-vl:2b-instruct` para la foto:
 
    ```sh
-   ollama pull qwen3:1.7b
+   npm run modelos
    ```
 
-   ```sh
-   ollama pull qwen3-vl:2b-instruct
-   ```
-
-   Si Ollama no corre ya como servicio, inícialo con `ollama serve` en lugar de `npm run ollama`. El backend se conecta a Ollama en `http://127.0.0.1:11434`.
-
-3. Opcional: consigue una clave de API de [TypeSafe](https://docs.typesafe.ai/api) para comparar con JEV.
+4. Opcional: consigue una clave de API de [TypeSafe](https://docs.typesafe.ai/api) para comparar con JEV.
 
 <details>
-<summary>Ollama aislado con <code>npm run ollama</code></summary>
+<summary>Ollama aislado de la charla</summary>
 
-`npm run ollama` ejecuta `start-ollama.sh`, que usa un binario de Ollama dedicado sin heredar claves de proveedores ni tocar la configuración global: deshabilita cloud, usa contexto 4096 y mantiene un solo modelo cargado. Espera el binario en `~/.local/share/charla-jev/ollama/bin/ollama` (o bajo `$XDG_DATA_HOME` si está definido) y guarda los modelos en `~/.local/share/charla-jev/models`. Con ese Ollama corriendo, descarga los modelos desde otra terminal:
-
-```sh
-npm run ollama:modelos
-```
+Si existe el binario `~/.local/share/charla-jev/ollama/bin/ollama` (o el equivalente bajo `$XDG_DATA_HOME`), `npm start` y `npm run modelos` usan `start-ollama.sh` en lugar del Ollama del sistema. Ese script no hereda claves de proveedores ni toca la configuración global: deshabilita cloud, usa contexto 4096, mantiene un solo modelo cargado y guarda los modelos en `~/.local/share/charla-jev/models`.
 
 Como mantiene un solo modelo cargado, al pasar de las demos de texto a la de la foto Ollama cambia de modelo: vuelve a pulsar **Precargar LLM** al cambiar de pestaña.
 
@@ -148,7 +134,7 @@ Una estructura válida no demuestra que la respuesta sea correcta, y una media p
 
 ## Pruebas
 
-Con el servidor activo en el puerto 8000 (`npm start`) y Chromium instalado:
+Con `npm start` activo en el puerto 8000 y Chromium instalado:
 
 ```sh
 npm test

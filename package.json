@@ -6,10 +6,8 @@
     "node": ">=22"
   },
   "scripts": {
-    "start": "node demo-server.mjs",
-    "start:jev": "node demo-server.mjs --enable-jev",
-    "ollama": "bash start-ollama.sh",
-    "ollama:modelos": "export OLLAMA_HOST=127.0.0.1:11434; O=\"${XDG_DATA_HOME:-$HOME/.local/share}/charla-jev/ollama/bin/ollama\"; \"$O\" pull qwen3:1.7b && \"$O\" pull qwen3-vl:2b-instruct",
+    "start": "node start.mjs",
+    "modelos": "node start.mjs modelos",
     "test": "node --test *.test.cjs *.test.mjs"
   }
 }
