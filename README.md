@@ -1,101 +1,108 @@
 # MedellínJS: JEV y los modelos de decisión
 
-Material de la charla «JEV y los modelos de decisión» para MedellínJS. Esta guía explica cómo ejecutar en tu máquina la presentación y los ejemplos en vivo.
+Presentación de la charla «JEV y los modelos de decisión» para MedellínJS, con sus notas del presentador y los ejemplos que se ejecutan en vivo durante la charla. Todo es JavaScript sin dependencias: solo necesitas Node.js 22 o superior, y no hay que instalar paquetes.
+
+## Arrancar la presentación
+
+Desde la carpeta del proyecto:
+
+```sh
+npm start
+```
+
+Abre http://127.0.0.1:8000/index.html. Avanza con las flechas o la barra espaciadora; el botón **Notas** abre las notas del presentador de la diapositiva actual, y las notas completas están en http://127.0.0.1:8000/outline.html. Para detener el servidor, pulsa Ctrl+C.
+
+Para ver las diapositivas no necesitas Ollama ni una clave de JEV. Solo hacen falta para ejecutar las demos en vivo.
+
+## Presentar con las demos en vivo
+
+Las diapositivas de las demos en vivo tienen un botón **Abrir la demo y comparar** que abre la página de comparación. Para que esas demos ejecuten de verdad, arranca dos procesos en terminales separadas (la primera vez, sigue antes [Preparar las demos en vivo](#preparar-las-demos-en-vivo)):
+
+1. El LLM local:
+
+   ```sh
+   npm run ollama
+   ```
+
+2. El servidor con JEV habilitado, en una terminal que tenga exportada tu clave:
+
+   ```sh
+   export TYPESAFE_API_KEY=tu-clave
+   ```
+
+   ```sh
+   npm run start:jev
+   ```
+
+3. Abre http://127.0.0.1:8000/index.html y presenta. En cada demo, pulsa **Precargar LLM** antes de **Ejecutar**.
+
+Sin clave, `npm start` también sirve las demos, pero solo con el LLM local. Iniciar el servidor no envía nada a JEV; cada vez que pulsas **Ejecutar** se envía una petición que puede consumir créditos.
+
+## Comandos
+
+| Comando | Qué hace |
+| --- | --- |
+| `npm start` | Sirve la presentación, las notas y las demos (solo con el LLM local). |
+| `npm run start:jev` | Lo mismo, con JEV habilitado. Requiere `TYPESAFE_API_KEY` en el entorno. |
+| `npm run ollama` | Inicia el Ollama aislado de la charla (`start-ollama.sh`). |
+| `npm run ollama:modelos` | Descarga en ese Ollama los modelos de las demos. Requiere `npm run ollama` corriendo. |
+| `npm test` | Ejecuta las pruebas. Requiere el servidor activo en el puerto 8000 y Chromium. |
+
+El servidor acepta además `--port <número>`, `--local-model <nombre>` y `--vision-model <nombre>`; por ejemplo, `npm start -- --port 8080`. Escucha solo en `127.0.0.1`.
 
 ## Qué incluye
 
-- **Presentación** (`index.html`): las diapositivas de la charla, con dos demos animadas de catálogo y revisión que usan datos preparados.
+- **Presentación** (`index.html`): las diapositivas, con dos demos animadas de catálogo y revisión que usan datos preparados.
 - **Notas del presentador** (`outline.html`): el guion de cada diapositiva, con tiempos, ideas clave y fuentes.
-- **Ejemplos en vivo** (`demos.html`): envían el mismo caso a JEV (TypeSafe) y a un LLM local con Ollama, y comparan sus respuestas tipadas lado a lado:
+- **Demos en vivo** (`demos.html`): envían el mismo caso a JEV (TypeSafe) y a un LLM local con Ollama, y comparan sus respuestas tipadas lado a lado:
   - **Ticket de soporte:** un ticket y tres preguntas (categoría, frustración y urgencia) en una sola petición por proveedor.
   - **Cinco correos:** una bandeja de cinco correos y cinco preguntas de spam, también en una sola petición por proveedor.
   - **Reclamo con foto (experimental):** un reclamo y una foto del paquete, con cuatro preguntas: si hay daño, de qué tipo, si coincide con el reclamo y dónde está (un recuadro sobre la imagen).
 
-Todo es JavaScript sin dependencias: el backend usa solo APIs nativas de Node y no hay que instalar paquetes.
+## Preparar las demos en vivo
 
-## Requisitos
+Solo hace falta una vez.
 
-- Node.js 22 o superior.
-- [Ollama](https://ollama.com/download) con los modelos `qwen3:1.7b` (texto) y `qwen3-vl:2b-instruct` (multimodal, para el reclamo con foto). Los ejemplos se probaron con Ollama 0.40.3.
-- Opcional: una clave de API de [TypeSafe](https://docs.typesafe.ai/api) para comparar con JEV. Sin ella, los ejemplos funcionan solo con el LLM local.
-- Opcional: Chromium, para las pruebas de navegador.
+1. Clona el repositorio:
 
-## 1. Clonar el repositorio
+   ```sh
+   git clone https://github.com/dobleuber/charla-jev.git
+   ```
 
-```sh
-git clone https://github.com/dobleuber/charla-jev.git
-```
+   ```sh
+   cd charla-jev
+   ```
 
-```sh
-cd charla-jev
-```
+2. Instala [Ollama](https://ollama.com/download) (se probó con la versión 0.40.3) y descarga los dos modelos: `qwen3:1.7b` para el texto y `qwen3-vl:2b-instruct` para la foto. Con una instalación normal de Ollama:
 
-## 2. Preparar el LLM local
+   ```sh
+   ollama pull qwen3:1.7b
+   ```
 
-El backend se conecta a Ollama en `http://127.0.0.1:11434`. Con una instalación normal de Ollama, descarga los modelos:
+   ```sh
+   ollama pull qwen3-vl:2b-instruct
+   ```
 
-```sh
-ollama pull qwen3:1.7b
-```
+   Si Ollama no corre ya como servicio, inícialo con `ollama serve` en lugar de `npm run ollama`. El backend se conecta a Ollama en `http://127.0.0.1:11434`.
 
-```sh
-ollama pull qwen3-vl:2b-instruct
-```
-
-Si Ollama no corre ya como servicio, inícialo en otra terminal con `ollama serve`.
+3. Opcional: consigue una clave de API de [TypeSafe](https://docs.typesafe.ai/api) para comparar con JEV.
 
 <details>
-<summary>Alternativa: Ollama aislado con <code>start-ollama.sh</code></summary>
+<summary>Ollama aislado con <code>npm run ollama</code></summary>
 
-`start-ollama.sh` ejecuta un binario de Ollama dedicado, sin heredar claves de proveedores ni tocar la configuración global: deshabilita cloud, usa contexto 4096 y mantiene un solo modelo cargado. Espera el binario en `~/.local/share/charla-jev/ollama/bin/ollama` (o bajo `$XDG_DATA_HOME` si está definido) y guarda los modelos en `~/.local/share/charla-jev/models`.
-
-```sh
-bash start-ollama.sh
-```
-
-Con el script corriendo, descarga los modelos desde otra terminal:
+`npm run ollama` ejecuta `start-ollama.sh`, que usa un binario de Ollama dedicado sin heredar claves de proveedores ni tocar la configuración global: deshabilita cloud, usa contexto 4096 y mantiene un solo modelo cargado. Espera el binario en `~/.local/share/charla-jev/ollama/bin/ollama` (o bajo `$XDG_DATA_HOME` si está definido) y guarda los modelos en `~/.local/share/charla-jev/models`. Con ese Ollama corriendo, descarga los modelos desde otra terminal:
 
 ```sh
-OLLAMA_HOST=127.0.0.1:11434 ~/.local/share/charla-jev/ollama/bin/ollama pull qwen3:1.7b
+npm run ollama:modelos
 ```
 
-```sh
-OLLAMA_HOST=127.0.0.1:11434 ~/.local/share/charla-jev/ollama/bin/ollama pull qwen3-vl:2b-instruct
-```
-
-El script mantiene un solo modelo cargado, así que al pasar de los ejemplos de texto al de la foto Ollama cambia de modelo; vuelve a pulsar **Precargar LLM** al cambiar de pestaña.
+Como mantiene un solo modelo cargado, al pasar de las demos de texto a la de la foto Ollama cambia de modelo: vuelve a pulsar **Precargar LLM** al cambiar de pestaña.
 
 </details>
 
-## 3. Iniciar el servidor
+## Las demos paso a paso
 
-Solo con el LLM local:
-
-```sh
-node demo-server.mjs
-```
-
-Para comparar también con JEV, exporta tu clave en la misma terminal e inicia el servidor con `--enable-jev`:
-
-```sh
-export TYPESAFE_API_KEY=tu-clave
-```
-
-```sh
-node demo-server.mjs --enable-jev
-```
-
-La clave se lee solo en el proceso del servidor: no se carga `.env`, no se escribe en archivos ni llega al navegador. Iniciar el servidor no envía nada a JEV; cada vez que pulsas **Ejecutar** se envía una petición que puede consumir créditos.
-
-Otras opciones: `--local-model <nombre>` y `--vision-model <nombre>` para usar otros modelos de Ollama en los ejemplos de texto y en el de la foto, y `--port <número>` para cambiar el puerto (por defecto, 8000). El servidor escucha solo en `127.0.0.1`.
-
-## 4. Abrir la presentación
-
-Abre http://127.0.0.1:8000/index.html. Avanza con las flechas o la barra espaciadora; el botón **Notas** abre las notas del presentador de la diapositiva actual. Las diapositivas de los ejemplos en vivo tienen un botón que abre la página de comparación.
-
-Las notas completas están en http://127.0.0.1:8000/outline.html. La presentación también funciona sin Ollama ni JEV; solo los ejemplos en vivo los necesitan.
-
-## 5. Ejecutar el ejemplo del ticket
+### Ticket de soporte
 
 1. Abre http://127.0.0.1:8000/demos.html#ticket. Arriba a la derecha verás si JEV y el LLM están disponibles.
 2. Pulsa **Precargar LLM** para cargar el modelo antes de la primera ejecución; así el tiempo medido no incluye la carga.
@@ -103,16 +110,16 @@ Las notas completas están en http://127.0.0.1:8000/outline.html. La presentaci�
 4. Pulsa **Ejecutar** (sin JEV habilitado, el botón dice **Ejecutar solo en LLM local**). Los proveedores disponibles reciben la misma evidencia, preguntas y rúbrica en paralelo. Cada tarjeta muestra los eventos reales del servidor (HTTP iniciado, respuesta recibida, validación) y, al final, las respuestas y lo que decide el código con ellas.
 5. Pulsa **Ver código JS** para ver las solicitudes exactas, el JSON Schema y las funciones del servidor que se ejecutaron.
 
-## 6. Ejecutar el ejemplo de los cinco correos
+### Cinco correos
 
 1. Abre http://127.0.0.1:8000/demos.html#correos o cambia a la pestaña **Cinco correos**.
 2. Elige **Bandeja mixta** o **Promoción o conversación**, y edita los correos si quieres.
 3. Pulsa **Ejecutar**: cada proveedor responde las cinco preguntas en una sola petición.
 4. Cambia el **Corte de spam para JEV** entre 0,50 y 0,80. Los correos se reagrupan con la misma respuesta, sin enviar otra petición. El corte solo aplica a JEV: el LLM responde sí o no, sin probabilidad.
 
-## 7. Ejecutar el ejemplo del reclamo con foto
+### Reclamo con foto
 
-Este ejemplo usa las imágenes y las preguntas Box de JEV, que TypeSafe marca como preliminares: el servidor fija el modelo `jev-1.14.0` y envía el encabezado `TypeSafe-Danger-Zone-Images: true`, pero el formato puede cambiar.
+Esta demo usa las imágenes y las preguntas Box de JEV, que TypeSafe marca como preliminares: el servidor fija el modelo `jev-1.14.0` y envía el encabezado `TypeSafe-Danger-Zone-Images: true`, pero el formato puede cambiar.
 
 1. Abre http://127.0.0.1:8000/demos.html#foto o cambia a la pestaña **Reclamo con foto**.
 2. Pulsa **Precargar LLM** para cargar el modelo multimodal. En CPU, el LLM local tarda decenas de segundos en procesar cada foto nueva.
@@ -141,10 +148,10 @@ Una estructura válida no demuestra que la respuesta sea correcta, y una media p
 
 ## Pruebas
 
-Con el servidor activo en el puerto 8000 y Chromium instalado:
+Con el servidor activo en el puerto 8000 (`npm start`) y Chromium instalado:
 
 ```sh
-node --test *.test.cjs *.test.mjs
+npm test
 ```
 
 Las pruebas usan proveedores simulados y servidores locales, así que no consumen créditos de JEV ni necesitan Ollama.
