@@ -109,7 +109,7 @@ Esta demo usa las imágenes y las preguntas Box de JEV, que TypeSafe marca como 
 
 1. Abre http://127.0.0.1:8000/demos.html#foto o cambia a la pestaña **Reclamo con foto**.
 2. Pulsa **Precargar LLM** para cargar el modelo multimodal. En CPU, el LLM local tarda decenas de segundos en procesar cada foto nueva.
-3. Elige **Caja golpeada**, **Caja intacta** o **Foto poco clara**. Puedes editar el texto del reclamo; la foto es la misma para ambos proveedores.
+3. Elige **Caja golpeada**, **Caja intacta** o **Daño leve**. Puedes editar el texto del reclamo; la foto es la misma para ambos proveedores.
 4. Pulsa **Ejecutar**. Cada tarjeta dibuja su propio recuadro sobre la foto y muestra lo que decide el código: revisión prioritaria con evidencia, revisión manual o pedir otra foto. Nunca se aprueba un reembolso automático.
 
 Las fotos están en `fotos/`. Para usar las tuyas, reemplaza esos archivos conservando los nombres. Deben ser PNG o JPEG de 280 a 1568 px por lado y estar guardadas derechas: JEV no aplica la rotación EXIF, así que el servidor rechaza las fotos que la tengan. Con ImageMagick puedes prepararlas así:

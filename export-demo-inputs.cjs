@@ -19,7 +19,7 @@ catalog.mail.ambiguous.state.emails = {
   e04: { subject: 'Descuento disponible', body: 'Esta semana ofrecemos un descuento en servicios. No consta una conversación previa.' },
   e05: { subject: 'Seguimiento de la reunión', body: 'Gracias por la reunión del lunes. Te comparto el resumen acordado y las preguntas pendientes.' },
 };
-// Reclamo con foto: la misma pregunta sobre tres fotos. Las imágenes viven en fotos/
+// Reclamo con foto: las mismas preguntas sobre tres fotos. Las imágenes viven en fotos/
 // y el servidor las adjunta a ambas peticiones; Box requiere Jev 1.14.
 const PHOTO_REF = 'foto-reclamo-7c1e';
 const photoClaim = { subject: 'El paquete llegó dañado', body: 'Recibí el pedido con una esquina de la caja hundida y rota. Adjunto una foto. Quiero que me envíen otro.' };
@@ -36,5 +36,5 @@ function photoRequest(file) {
     },
   };
 }
-catalog.photo = { damaged: photoRequest('fotos/caja-golpeada.jpg'), intact: photoRequest('fotos/caja-intacta.jpg'), unclear: photoRequest('fotos/foto-poco-clara.jpg') };
+catalog.photo = { damaged: photoRequest('fotos/caja-golpeada.jpg'), intact: photoRequest('fotos/caja-intacta.jpg'), slight: photoRequest('fotos/caja-dano-leve.jpg') };
 fs.writeFileSync(path.join(__dirname, 'demo-inputs.json'), JSON.stringify(catalog, null, 2) + '\n');

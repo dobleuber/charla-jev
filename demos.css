@@ -61,8 +61,8 @@ select{min-height:38px;border:1px solid var(--edge);border-radius:0;padding:5px 
 .mail-editor summary::marker{color:var(--magenta)}
 .mail-editor .field{font-size:.72rem;margin-top:8px}
 .mail-editor textarea{min-height:78px}
-.photo-frame{position:relative;margin:14px 0 0;line-height:0;box-shadow:inset 0 0 0 1px var(--edge);overflow:hidden}
-.photo-frame img{display:block;width:100%;height:auto}
+.photo-frame{position:relative;width:fit-content;max-width:100%;margin:14px auto 0;line-height:0;box-shadow:0 0 0 1px var(--edge);overflow:hidden}
+.photo-frame img{display:block;max-width:100%;max-height:440px;width:auto;height:auto}
 .provider-result .photo-frame{margin:6px 0 12px}
 .photo-box{position:absolute;border:2px solid var(--provider,var(--cyan));box-shadow:0 0 0 1px #05050b,0 0 14px var(--provider,var(--cyan));line-height:1.2;animation:appear .3s ease-out}
 .photo-box span{position:absolute;left:0;top:0;padding:2px 6px;background:var(--provider,var(--cyan));color:var(--void);font:800 .68rem var(--font-mono);white-space:nowrap}

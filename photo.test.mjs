@@ -31,7 +31,7 @@ async function photoRoot() {
   const root = await fs.mkdtemp(path.join(os.tmpdir(), 'jev-photo-'));
   await fs.copyFile(new URL('./demo-inputs.json', import.meta.url), path.join(root, 'demo-inputs.json'));
   await fs.mkdir(path.join(root, 'fotos'));
-  for (const name of ['caja-golpeada.jpg', 'caja-intacta.jpg', 'foto-poco-clara.jpg']) await fs.writeFile(path.join(root, 'fotos', name), jpeg(1024, 768));
+  for (const name of ['caja-golpeada.jpg', 'caja-intacta.jpg', 'caja-dano-leve.jpg']) await fs.writeFile(path.join(root, 'fotos', name), jpeg(1024, 768));
   return root;
 }
 const jevBox = { type: 'box', box: { top: 0.4, bottom: 0.55, left: 0.55, right: 0.65 }, confidence: 0.9 };

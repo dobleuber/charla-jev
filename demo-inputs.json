@@ -279,7 +279,7 @@
         }
       }
     },
-    "unclear": {
+    "slight": {
       "model": "jev-1.14.0",
       "state": {
         "reclamo": {
@@ -291,7 +291,7 @@
       "assets": {
         "foto-reclamo-7c1e": {
           "type": "image",
-          "file": "fotos/foto-poco-clara.jpg"
+          "file": "fotos/caja-dano-leve.jpg"
         }
       },
       "questions": {

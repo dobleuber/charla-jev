@@ -137,7 +137,7 @@
     document.querySelectorAll('[data-scenario]').forEach(node => node.setAttribute('aria-pressed', String(node.dataset.scenario === scenario)));
     $('#back-link').href = `index.html#slide-${backSlides[scenario]}`;
     $('#preset').replaceChildren();
-    const labels = { clear: scenario === 'ticket' ? 'Problema claro y urgente' : 'Bandeja mixta', ambiguous: scenario === 'ticket' ? 'Mensaje poco preciso' : 'Promoción o conversación', billing: 'Cobro que necesita revisión', damaged: 'Caja golpeada', intact: 'Caja intacta', unclear: 'Foto poco clara' };
+    const labels = { clear: scenario === 'ticket' ? 'Problema claro y urgente' : 'Bandeja mixta', ambiguous: scenario === 'ticket' ? 'Mensaje poco preciso' : 'Promoción o conversación', billing: 'Cobro que necesita revisión', damaged: 'Caja golpeada', intact: 'Caja intacta', slight: 'Daño leve' };
     for (const key of Object.keys(catalog[scenario])) { const option = document.createElement('option'); option.value = key; option.textContent = labels[key] ?? key; $('#preset').append(option); }
     $('#task-title').textContent = scenario === 'ticket' ? 'Tres preguntas, una respuesta' : scenario === 'photo' ? 'Cuatro preguntas sobre una foto' : 'Cinco preguntas, una respuesta';
     $('#task-description').replaceChildren();
