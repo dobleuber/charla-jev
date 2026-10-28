@@ -90,7 +90,7 @@ Las notas completas están en http://127.0.0.1:8000/outline.html. La presentaci�
 2. Pulsa **Precargar LLM** para cargar el modelo antes de la primera ejecución; así el tiempo medido no incluye la carga.
 3. Elige un ejemplo: **Problema claro y urgente**, **Mensaje poco preciso** o **Cobro que necesita revisión**. Puedes editar el asunto y el contenido.
 4. Pulsa **Ejecutar** (sin JEV habilitado, el botón dice **Ejecutar solo en LLM local**). Los proveedores disponibles reciben la misma evidencia, preguntas y rúbrica en paralelo. Cada tarjeta muestra los eventos reales del servidor (HTTP iniciado, respuesta recibida, validación) y, al final, las respuestas y lo que decide el código con ellas.
-5. Pulsa **Ver código JS** para ver las solicitudes exactas, el JSON Schema y las funciones del servidor que se ejecutaron.
+5. Pulsa **Ver código JS** para ver las solicitudes exactas, el JSON Schema, las funciones del servidor que se ejecutaron y, tras ejecutar, las respuestas originales de cada proveedor.
 
 ## 6. Ejecutar el ejemplo de los cinco correos
 
