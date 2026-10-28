@@ -57,8 +57,7 @@ function mountDecisionDemo(root, example) {
     <div class="chart-host"></div>
     <p class="flow-context"></p>
     <p class="decision-action" aria-hidden="true"></p>
-    <p class="demo-caption" role="status" aria-live="polite"></p>
-    <p class="demo-disclaimer">SIMULACIÓN ILUSTRATIVA · datos preparados · no envía solicitudes ni muestra razonamiento interno.</p>`;
+    <p class="demo-caption" role="status" aria-live="polite"></p>`;
   const query = selector => root.querySelector(selector);
 
   function drawChart() {

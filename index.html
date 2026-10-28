@@ -125,7 +125,6 @@
     pre { margin:0; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; font:clamp(.76rem,1.14vw,.94rem)/1.4 var(--font-mono); letter-spacing:-.02em; text-shadow:0 0 6px #00f0ff55; }
     .example-mark { display:inline-block; align-self:flex-start; padding:.26rem .9rem .26rem .7rem; color:#05050b; background:var(--yellow); font:800 .78rem var(--font-mono); letter-spacing:.1em; text-transform:uppercase; clip-path:polygon(0 0,100% 0,calc(100% - .5rem) 100%,0 100%); }
     .slide--lime .example-mark { color:var(--yellow); background:#07070d; }
-    .callout { margin-top:1.4rem; padding:.9rem 1.2rem; border-left:5px solid var(--accent-2); background:var(--surface); color:var(--surface-fg); font-size:1.1rem; line-height:1.4; }
     .steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin-top:1.6rem; }
     .step { min-width:0; padding:1.2rem 1.3rem; box-shadow:inset 0 0 0 1px var(--edge), inset 5px 0 0 var(--accent); }
     .step b { display:block; margin-bottom:.6rem; color:var(--accent); font:800 .82rem var(--font-mono); letter-spacing:.12em; }
@@ -308,7 +307,6 @@
         <div>
           <h2>Haz que la pregunta sea<br><span class="accent">explícita.</span></h2>
           <p class="lead">Estado + preguntas tipadas → respuestas estructuradas.</p>
-          <div class="callout">Las claves de API se quedan en un servidor o en el playground de TypeSafe, no en estas diapositivas.</div>
         </div>
         <div class="block"><strong>1 POST /v1/systemone · conjunto completo de preguntas</strong><pre><code>{
   "model": "jev-latest",
@@ -350,7 +348,7 @@
       <div class="bottom"><span class="source">Nunca emitas un reembolso basándote solo en la lectura que hace un modelo de un mensaje.</span></div>
     </section>
 
-    <section class="slide slide--lime" id="slide-11" data-outline-slide="10" aria-label="Abrir comparación real ticket" hidden><div class="mast"><span>Demo 01 en vivo / 11</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Un ticket. Tres decisiones.</h2><p class="lead">La misma entrada para JEV y un LLM local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>Categoría: Choice</strong></div><div class="card"><span class="symbol">02</span><strong>Frustración: Score</strong></div><div class="card"><span class="symbol">03</span><strong>Urgencia: Noul</strong></div></div><a class="demo-launch" href="demos.html#ticket">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.<br>La espera está animada; no se inventan pasos internos ni progreso.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La ejecución comienza al pulsar Ejecutar en la página de demos.</span></div></section>
+    <section class="slide slide--lime" id="slide-11" data-outline-slide="10" aria-label="Abrir comparación real ticket" hidden><div class="mast"><span>Demo 01 en vivo / 11</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Un ticket. Tres decisiones.</h2><p class="lead">La misma entrada para JEV y un LLM local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>Categoría: Choice</strong></div><div class="card"><span class="symbol">02</span><strong>Frustración: Score</strong></div><div class="card"><span class="symbol">03</span><strong>Urgencia: Noul</strong></div></div><a class="demo-launch" href="demos.html#ticket">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.</p></div></section>
 
     <section class="slide slide--cream" id="slide-12" data-outline-slide="11" aria-label="Cinco correos y cinco preguntas dirigidas en una solicitud" hidden>
       <div class="mast"><span>Extensión de correo / 12</span><span class="kind">Un estado compartido</span></div>
@@ -369,7 +367,7 @@
       <div class="bottom"><span class="source">Solo correos sintéticos. Payload completo en las <a href="outline.html#slide-11" target="_blank" rel="noopener noreferrer">notas</a>. <a href="https://docs.typesafe.ai/primitives#reference-specific-fields" target="_blank" rel="noopener noreferrer">Rutas de estado explícitas</a>.</span></div>
     </section>
 
-    <section class="slide " id="slide-13" data-outline-slide="12" aria-label="Abrir comparación real correos" hidden><div class="mast"><span>Extensión de correo en vivo / 13</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Cinco correos. Un envío.</h2><p class="lead">Cinco preguntas explícitas sobre un único lote.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>e01–e05: estado compartido</strong></div><div class="card"><span class="symbol">02</span><strong>5 respuestas en una petición</strong></div><div class="card"><span class="symbol">03</span><strong>El código agrupa con un corte</strong></div></div><a class="demo-launch" href="demos.html#correos">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.<br>La espera está animada; no se inventan pasos internos ni progreso.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La ejecución comienza al pulsar Ejecutar en la página de demos.</span></div></section>
+    <section class="slide " id="slide-13" data-outline-slide="12" aria-label="Abrir comparación real correos" hidden><div class="mast"><span>Extensión de correo en vivo / 13</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Cinco correos. Un envío.</h2><p class="lead">Cinco preguntas explícitas sobre un único lote.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>e01–e05: estado compartido</strong></div><div class="card"><span class="symbol">02</span><strong>5 respuestas en una petición</strong></div><div class="card"><span class="symbol">03</span><strong>El código agrupa con un corte</strong></div></div><a class="demo-launch" href="demos.html#correos">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.</p></div></section>
 
     <section class="slide slide--cream" id="slide-14" data-outline-slide="13" aria-label="Qué es realmente nuevo" hidden>
       <div class="mast"><span>Perspectiva / 14</span><span class="kind">El cambio útil</span></div>
@@ -396,7 +394,6 @@
           <div><strong>Operación</strong><p>Planea para caídas, latencia, cambios de modelo, privacidad y una ruta alternativa.</p></div>
         </div>
       </div>
-      <div class="bottom"><span class="source">Ninguna cifra de velocidad, costo o precisión que aparece aquí se presenta como resultado medido.</span></div>
     </section>
 
     <section class="slide slide--blue" id="slide-16" data-outline-slide="15" aria-label="Proveedores y alternativas abiertas de modelos de decisión" hidden>

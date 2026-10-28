@@ -34,7 +34,6 @@ test('flowchart playback pauses, replays, and stops when leaving the slide', { t
   await withBrowser(async ({ evaluate, go, pause }) => {
     for (const number of [9,10]) {
       await go(number);
-      assert.match(await evaluate(`document.querySelector('#slide-${number} .demo-disclaimer').innerText`), /SIMULACIÓN ILUSTRATIVA.*no envía solicitudes/i);
       for(let i=0;i<4;i++) await evaluate(`document.querySelector('#slide-${number} [data-action=step]').click()`);
       await evaluate(`document.querySelector('#slide-${number} [data-action=play]').click()`);
       assert.equal(await evaluate(`document.querySelector('#slide-${number} .decision-demo').dataset.stage`), '0');
