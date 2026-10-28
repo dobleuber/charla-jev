@@ -125,7 +125,6 @@
     pre { margin:0; overflow:auto; white-space:pre-wrap; overflow-wrap:anywhere; font:clamp(.76rem,1.14vw,.94rem)/1.4 var(--font-mono); letter-spacing:-.02em; text-shadow:0 0 6px #00f0ff55; }
     .example-mark { display:inline-block; align-self:flex-start; padding:.26rem .9rem .26rem .7rem; color:#05050b; background:var(--yellow); font:800 .78rem var(--font-mono); letter-spacing:.1em; text-transform:uppercase; clip-path:polygon(0 0,100% 0,calc(100% - .5rem) 100%,0 100%); }
     .slide--lime .example-mark { color:var(--yellow); background:#07070d; }
-    .callout { margin-top:1.4rem; padding:.9rem 1.2rem; border-left:5px solid var(--accent-2); background:var(--surface); color:var(--surface-fg); font-size:1.1rem; line-height:1.4; }
     .steps { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin-top:1.6rem; }
     .step { min-width:0; padding:1.2rem 1.3rem; box-shadow:inset 0 0 0 1px var(--edge), inset 5px 0 0 var(--accent); }
     .step b { display:block; margin-bottom:.6rem; color:var(--accent); font:800 .82rem var(--font-mono); letter-spacing:.12em; }
@@ -219,7 +218,7 @@
       <div class="mast"><span>El problema / 02</span><span class="kind">Un mensaje, tres decisiones</span></div>
       <div class="body">
         <h2>No todo mensaje<br>necesita una respuesta.</h2>
-        <blockquote class="question">“El checkout lleva tres días caído. Los clientes no pueden pagar. Por favor, ayúdenme hoy.”</blockquote>
+        <blockquote class="question">“La compra lleva tres días fallando. Estamos perdiendo ventas. Estoy furioso. Por favor, ayúdennos hoy.”</blockquote>
         <div class="cards cards--numbered">
           <div class="card"><span class="symbol">01</span><strong>¿Quién se encarga?</strong><p>Enrutar a un equipo.</p></div>
           <div class="card"><span class="symbol">02</span><strong>¿Qué tan urgente es?</strong><p>Decidir si alertar.</p></div>
@@ -249,8 +248,8 @@
       <div class="body">
         <h2>Tres formas de preguntar.</h2>
         <div class="cards">
-          <div class="card"><span class="symbol">↗</span><h3>Choice</h3><p>¿Cuál opción? <br><strong>Facturación / Técnico / Revisión</strong></p><p class="small-note">Opción seleccionada + distribución + confianza</p></div>
-          <div class="card"><span class="symbol">≋</span><h3>Score</h3><p>¿En qué punto de una escala ordenada? <br><strong>Calmado / Frustrado / Muy enojado</strong></p><p class="small-note">Puntaje + distribución + confianza</p></div>
+          <div class="card"><span class="symbol">↗</span><h3>Choice</h3><p>¿Cuál opción? <br><strong>Facturación / Soporte técnico / Revisión humana</strong></p><p class="small-note">Opción seleccionada + distribución + confianza</p></div>
+          <div class="card"><span class="symbol">≋</span><h3>Score</h3><p>¿En qué punto de una escala ordenada? <br><strong>Tranquilo / Frustrado / Muy enojado</strong></p><p class="small-note">Puntaje + distribución + confianza</p></div>
           <div class="card"><span class="symbol">?</span><h3>Noul</h3><p>¿Este enunciado es verdadero? <br><strong>¿Urgente o no?</strong></p><p class="small-note">Un valor de 0 a 1</p></div>
         </div>
         <p class="small-note">Haz varias preguntas enfocadas sobre el mismo estado en una sola solicitud.</p>
@@ -293,13 +292,12 @@
           <p class="lead">La misma evidencia, juicios independientes.</p>
         </div>
         <div>
-          <blockquote class="quote"><small>Ticket entrante</small>“El checkout lleva tres días fallando. Estamos perdiendo ventas. Estoy furioso. Por favor, ayúdenme hoy.”</blockquote>
+          <blockquote class="quote"><small>Ticket entrante</small>“La compra lleva tres días fallando. Estamos perdiendo ventas. Estoy furioso. Por favor, ayúdennos hoy.”</blockquote>
           <div class="question-list" style="margin-top:.8rem">
             <div><b>Choice</b><span>¿Qué categoría?</span></div><div><b>Noul</b><span>¿El ticket necesita atención hoy?</span></div><div><b>Score</b><span>¿Qué tan frustrado está el cliente?</span></div>
           </div>
         </div>
       </div>
-      <div class="bottom"><span class="source">Describe la rúbrica antes de mostrar cualquier resultado.</span></div>
     </section>
 
     <section class="slide" id="slide-8" data-outline-slide="7" aria-label="Forma de la solicitud y la respuesta de Jev" hidden>
@@ -308,25 +306,27 @@
         <div>
           <h2>Haz que la pregunta sea<br><span class="accent">explícita.</span></h2>
           <p class="lead">Estado + preguntas tipadas → respuestas estructuradas.</p>
-          <div class="callout">Las claves de API se quedan en un servidor o en el playground de TypeSafe, no en estas diapositivas.</div>
         </div>
         <div class="block"><strong>1 POST /v1/systemone · conjunto completo de preguntas</strong><pre><code>{
   "model": "jev-latest",
-  "state": {"ticket": {"body": "La compra falló…"}},
+  "state": {"ticket": {
+    "body": "La compra lleva tres días fallando…"}},
   "questions": {
     "category": {"type": "choice",
       "instructions": "¿Categoría de `ticket`?",
-      "criteria": {"billing": "Cobros",
-        "technical": "Integración", "review": "Poco claro"}},
+      "criteria": {"billing": "Cobros, reembolsos…",
+        "technical": "Errores de software…",
+        "review": "Poco claro…"}},
     "frustration": {"type": "score",
       "instructions": "¿Frustración en `ticket`?",
-      "criteria": ["Calmado", "Frustrado", "Muy enojado"]},
+      "criteria": ["Tranquilo…", "Frustrado…",
+        "Muy enojado…"]},
     "urgency": {"type": "noul",
       "instructions": "¿Atención hoy en `ticket`?"}
   }
 }</code></pre></div>
       </div>
-      <div class="bottom"><span class="source">Extracto de la solicitud con las tres preguntas. Los criterios completos y la respuesta ilustrativa están en las <a href="outline.html#slide-7" target="_blank" rel="noopener noreferrer">notas del presentador</a>. <a href="https://docs.typesafe.ai/introduction/quickstart" target="_blank" rel="noopener noreferrer">Esquema de la API</a>.</span></div>
+      <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/introduction/quickstart" target="_blank" rel="noopener noreferrer">Esquema de la API</a></span></div>
     </section>
 
     <section class="slide demo-slide" id="slide-9" data-outline-slide="8" aria-label="Recorrido animado de selección de candidatos" hidden>
@@ -335,7 +335,7 @@
         <h2>Una coincidencia, o <span class="accent">ninguna respuesta respaldada.</span></h2>
         <div class="decision-demo" data-decision-demo="catalog"></div>
       </div>
-      <div class="bottom"><span class="source"><a href="https://madewithjev.com/" target="_blank" rel="noopener noreferrer">Made with Jev: ejemplos de la comunidad</a> · Primero va la recuperación; lo que dicen las publicaciones no son hechos verificados.</span></div>
+      <div class="bottom"><span class="source"><a href="https://madewithjev.com/" target="_blank" rel="noopener noreferrer">Made with Jev: ejemplos de la comunidad</a></span></div>
     </section>
 
     <section class="slide slide--dark demo-slide" id="slide-10" data-outline-slide="9" aria-label="Recorrido animado de reclamo y revisión" hidden>
@@ -347,7 +347,7 @@
       <div class="bottom"><span class="source">Nunca emitas un reembolso basándote solo en la lectura que hace un modelo de un mensaje.</span></div>
     </section>
 
-    <section class="slide slide--lime" id="slide-11" data-outline-slide="10" aria-label="Abrir comparación real ticket" hidden><div class="mast"><span>Demo 01 en vivo / 11</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Un ticket. Tres decisiones.</h2><p class="lead">La misma entrada para JEV y un LLM local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>Categoría: Choice</strong></div><div class="card"><span class="symbol">02</span><strong>Frustración: Score</strong></div><div class="card"><span class="symbol">03</span><strong>Urgencia: Noul</strong></div></div><a class="demo-launch" href="demos.html#ticket">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.<br>La espera está animada; no se inventan pasos internos ni progreso.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La ejecución comienza al pulsar Ejecutar en la página de demos.</span></div></section>
+    <section class="slide slide--lime" id="slide-11" data-outline-slide="10" aria-label="Abrir comparación real ticket" hidden><div class="mast"><span>Demo 01 en vivo / 11</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Un ticket. Tres decisiones.</h2><p class="lead">La misma entrada para JEV y un LLM local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>Categoría: Choice</strong></div><div class="card"><span class="symbol">02</span><strong>Frustración: Score</strong></div><div class="card"><span class="symbol">03</span><strong>Urgencia: Noul</strong></div></div><a class="demo-launch" href="demos.html#ticket">Abrir la demo y comparar →</a></div></section>
 
     <section class="slide slide--cream" id="slide-12" data-outline-slide="11" aria-label="Cinco correos y cinco preguntas dirigidas en una solicitud" hidden>
       <div class="mast"><span>Extensión de correo / 12</span><span class="kind">Un estado compartido</span></div>
@@ -363,12 +363,11 @@
         </div>
         <p class="mail-instruction">Cada instrucción nombra su objetivo: “¿El correo en <code>emails.e01</code> es spam? Evalúa solo este correo.” Las claves de las preguntas no identifican el objetivo para el modelo.</p>
       </div>
-      <div class="bottom"><span class="source">Solo correos sintéticos. Payload completo en las <a href="outline.html#slide-11" target="_blank" rel="noopener noreferrer">notas</a>. <a href="https://docs.typesafe.ai/primitives#reference-specific-fields" target="_blank" rel="noopener noreferrer">Rutas de estado explícitas</a>.</span></div>
     </section>
 
-    <section class="slide " id="slide-13" data-outline-slide="12" aria-label="Abrir comparación real correos" hidden><div class="mast"><span>Demo correo en vivo / 13</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Cinco correos. Un envío.</h2><p class="lead">Cinco preguntas explícitas sobre un único lote.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>e01–e05: estado compartido</strong></div><div class="card"><span class="symbol">02</span><strong>5 respuestas en una petición</strong></div><div class="card"><span class="symbol">03</span><strong>El código agrupa con un corte</strong></div></div><a class="demo-launch" href="demos.html#correos">Abrir la demo y comparar →</a><p class="small-note">Entrada editable · eventos HTTP reales · resultados lado a lado.<br>La espera está animada; no se inventan pasos internos ni progreso.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La ejecución comienza al pulsar Ejecutar en la página de demos.</span></div></section>
+    <section class="slide " id="slide-13" data-outline-slide="12" aria-label="Abrir comparación real correos" hidden><div class="mast"><span>Extensión de correo en vivo / 13</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Cinco correos. Un envío.</h2><p class="lead">Cinco preguntas explícitas sobre un único lote.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>e01–e05: estado compartido</strong></div><div class="card"><span class="symbol">02</span><strong>5 respuestas en una petición</strong></div><div class="card"><span class="symbol">03</span><strong>El código agrupa con un corte</strong></div></div><a class="demo-launch" href="demos.html#correos">Abrir la demo y comparar →</a></div></section>
 
-    <section class="slide slide--dark" id="slide-14" data-outline-slide="13" aria-label="Abrir comparación real reclamo con foto" hidden><div class="mast"><span>Demo foto en vivo / 14</span><span class="kind">Página dedicada · experimental</span></div><div class="body"><span class="example-mark">Jev 1.14 · imágenes</span><h2 style="margin-top:1rem">Una foto. Cuatro decisiones.</h2><p class="lead">La misma imagen para JEV y un LLM multimodal local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>¿Hay daño y de qué tipo? · Noul + Choice</strong></div><div class="card"><span class="symbol">02</span><strong>¿Coincide con el reclamo? · Noul</strong></div><div class="card"><span class="symbol">03</span><strong>¿Dónde está el daño? · Box</strong></div></div><a class="demo-launch" href="demos.html#foto">Abrir la demo y comparar →</a><p class="small-note">Imágenes y Box son una función preliminar de JEV: el formato puede cambiar.<br>En CPU, el LLM local tarda decenas de segundos por cada foto nueva.</p></div><div class="bottom"><span class="source">Esta diapositiva no envía solicitudes. La foto es evidencia, no verificación: ningún reembolso se aprueba por lo que diga un modelo. <a href="https://docs.typesafe.ai/images" target="_blank" rel="noopener noreferrer">Imágenes en JEV</a> · <a href="https://docs.typesafe.ai/primitives/box" target="_blank" rel="noopener noreferrer">Box</a>.</span></div></section>
+    <section class="slide slide--dark" id="slide-14" data-outline-slide="13" aria-label="Abrir comparación real reclamo con foto" hidden><div class="mast"><span>Demo foto en vivo / 14</span><span class="kind">Página dedicada · experimental</span></div><div class="body"><span class="example-mark">Jev 1.14 · imágenes</span><h2 style="margin-top:1rem">Una foto. Cuatro decisiones.</h2><p class="lead">La misma imagen para JEV y un LLM multimodal local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>¿Hay daño y de qué tipo? · Noul + Choice</strong></div><div class="card"><span class="symbol">02</span><strong>¿Coincide con el reclamo? · Noul</strong></div><div class="card"><span class="symbol">03</span><strong>¿Dónde está el daño? · Box</strong></div></div><a class="demo-launch" href="demos.html#foto">Abrir la demo y comparar →</a></div></section>
 
     <section class="slide slide--cream" id="slide-15" data-outline-slide="14" aria-label="Qué es realmente nuevo" hidden>
       <div class="mast"><span>Perspectiva / 15</span><span class="kind">El cambio útil</span></div>
@@ -395,7 +394,6 @@
           <div><strong>Operación</strong><p>Planea para caídas, latencia, cambios de modelo, privacidad y una ruta alternativa.</p></div>
         </div>
       </div>
-      <div class="bottom"><span class="source">Ninguna cifra de velocidad, costo o precisión que aparece aquí se presenta como resultado medido.</span></div>
     </section>
 
     <section class="slide slide--blue" id="slide-17" data-outline-slide="16" aria-label="Proveedores y alternativas abiertas de modelos de decisión" hidden>
@@ -429,7 +427,6 @@
         </div>
         <p class="lead">¿Qué decisión nunca automatizarías?</p>
       </div>
-      <div class="bottom"><span class="source"><a href="outline.html#slide-18" target="_blank" rel="noopener noreferrer">Notas del presentador y lista de fuentes</a>.</span></div>
     </section>
   </main>
   <nav class="control-bar" aria-label="Controles de diapositivas">

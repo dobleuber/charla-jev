@@ -44,7 +44,6 @@
 .returned-answer[aria-hidden="true"],.decision-action[aria-hidden="true"] { visibility:hidden; }
 .flow-context { order:5; margin:.3rem 0 0; font-size:.85rem; line-height:1.4; }
 .decision-action { order:6; min-height:1.35em; margin:.3rem 0; padding:.3rem .7rem; border-left:4px solid var(--accent-2); background:var(--surface); color:var(--surface-fg); font-size:1rem; line-height:1.35; font-weight:650; }
-.demo-disclaimer { order:7; margin:.1rem 0 0; font:.78rem/1.4 var(--font-mono); color:var(--soft); }
 @media(max-width:800px) {
   .demo-slide { padding:1.2rem 1.1rem; }
   .demo-slide .body { min-height:auto; }

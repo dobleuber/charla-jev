@@ -11,10 +11,16 @@
   // The photo demo runs on the multimodal model; text demos on the text model.
   const localInfo = () => scenario === 'photo' ? session?.local_vision ?? session?.local : session?.local;
   let catalog, session, planInfo, activeRun = null, channel, busy = true, codeTab = 'requests', codeDirty = true;
-  let shownEvents = new Set(), clockTimer, lastResult;
+  let shownEvents = new Set(), clockTimer, lastResult, codeTimer;
   function markDirty() {
     codeDirty = true; planInfo = null;
-    $('#code-content').textContent = 'La entrada cambió. Pulsa Ver código JS para consultar las solicitudes actualizadas.';
+    $('#code-content').textContent = 'La entrada cambió. Cargando las solicitudes actualizadas…';
+    clearTimeout(codeTimer);
+    if ($('#code-panel').open) codeTimer = setTimeout(loadCode, 400);
+  }
+  async function loadCode() {
+    try { if (codeDirty) await prepare(); else showCode(); }
+    catch (error) { $('#code-content').textContent = humanError(error.message); }
   }
   const formatMs = number => number == null ? 'No reportado' : `${new Intl.NumberFormat('es-CO', { maximumFractionDigits: 2 }).format(number)} ms`;
   const formatSeconds = number => `${new Intl.NumberFormat('es-CO', { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(Math.max(0, number) / 1000)} s`;
@@ -62,9 +68,13 @@
       .replace(/unexpected field/g, 'campo no permitido').replace(/unknown category/g, 'categoría no permitida')
       .replace(/value outside range/g, 'valor fuera de rango');
   }
-  async function api(url, body) {
+  async function api(url, body, renewed = false) {
     const response = await fetch(url, { method: body === undefined ? 'GET' : 'POST', headers: body === undefined ? {} : { 'Content-Type': 'application/json', 'X-Demo-Token': session.token }, body: body === undefined ? undefined : JSON.stringify(body), cache: 'no-store', signal: AbortSignal.timeout(url === '/api/warmup' ? 100000 : 12000) });
     const value = await response.json();
+    if (response.status === 403 && value.error === 'Session token rejected' && !renewed) {
+      session = { ...session, ...await api('/api/session') };
+      return api(url, body, true);
+    }
     if (!response.ok) { const error = new Error(humanError(value.error)); error.httpStatus=response.status; throw error; }
     return value;
   }
@@ -165,11 +175,21 @@
     codeDirty = false; showCode();
     return planInfo.plan;
   }
+  function rawFor(provider) {
+    const item = lastResult?.providers?.[provider];
+    if (!item) return '// Pulsa Ejecutar para ver aquí la respuesta original.';
+    const raw = structuredClone(item.raw ?? { error: item.error ?? 'Sin respuesta' });
+    if (typeof raw.message?.content === 'string') { try { raw.message.content = JSON.parse(raw.message.content); } catch {} }
+    return JSON.stringify(raw, null, 2);
+  }
   function showCode() {
     if (!planInfo) return;
     document.querySelectorAll('[data-code-tab]').forEach(node => node.setAttribute('aria-pressed', String(node.dataset.codeTab === codeTab)));
     const plan = planInfo.plan;
-    $('#code-content').textContent = codeTab === 'implementation' ? planInfo.javascript_code : codeTab === 'schema' ? `// JSON Schema real enviado a Ollama\nconst schema = ${JSON.stringify(plan.local_request.format,null,2)};\n\n// Preguntas y rúbrica compartidas\nconst questions = ${JSON.stringify(plan.jev_request.questions,null,2)};` : `// El servidor envía estos objetos. La autorización no va al navegador.\nconst jevRequest = ${JSON.stringify(plan.jev_request,null,2)};\n\nconst localRequest = ${JSON.stringify(plan.local_request,null,2)};`;
+    const responses = codeTab === 'responses';
+    $('#code-block').hidden = responses; $('#code-responses').hidden = !responses;
+    if (responses) { $('#response-jev').textContent = rawFor('jev'); $('#response-local').textContent = rawFor('local'); return; }
+    $('#code-content').textContent = codeTab === 'implementation' ? planInfo.javascript_code : codeTab === 'schema' ? `// JSON Schema real enviado a Ollama\nconst schema = ${JSON.stringify(plan.local_request.format,null,2)};\n\n// Preguntas y rúbrica compartidas\nconst questions = ${JSON.stringify(plan.jev_request.questions,null,2)};` : `// Solicitudes que el servidor envía a cada proveedor.\nconst jevRequest = ${JSON.stringify(plan.jev_request,null,2)};\n\nconst localRequest = ${JSON.stringify(plan.local_request,null,2)};`;
   }
   function clocks() {
     if (!lastResult) return;
@@ -246,6 +266,7 @@
   function rawResponse(parent, raw) { const details = document.createElement('details'); details.className = 'raw'; text(details,'summary','Ver JSON original · sin razonamiento interno'); text(details,'pre',JSON.stringify(raw,null,2)); parent.append(details); }
   function update(result) {
     lastResult = result;
+    if (codeTab === 'responses' && planInfo) showCode();
     for (const provider of ['jev','local']) {
       const card = $(`#provider-${provider}`), timeline = card.querySelector('.event-list');
       const entries = result.events.filter(event => event.provider === provider);
@@ -298,7 +319,8 @@
   $('#preset').addEventListener('change', () => { renderEditor(); clearResults(); document.querySelectorAll('.provider-card').forEach(card=>delete card.dataset.rendered); });
   $('#threshold').addEventListener('change',()=>{markDirty();if(lastResult?.demo==='mail' && lastResult.providers.jev?.ok)output('jev',lastResult.providers.jev);});
   $('#view-code').addEventListener('click', async () => { try { if (codeDirty) await prepare(); $('#code-panel').open=true; $('#code-panel').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth',block:'start'}); } catch(error) { $('#run-status').textContent=humanError(error.message); } });
-  document.querySelectorAll('[data-code-tab]').forEach(node=>node.addEventListener('click',()=>{codeTab=node.dataset.codeTab;showCode();}));
+  document.querySelectorAll('[data-code-tab]').forEach(node=>node.addEventListener('click',()=>{codeTab=node.dataset.codeTab;loadCode();}));
+  $('#code-panel').addEventListener('toggle', () => { if ($('#code-panel').open && codeDirty) loadCode(); });
   document.querySelectorAll('[data-scenario]').forEach(node=>{node.addEventListener('click',()=>switchScenario(node.dataset.scenario));node.addEventListener('keydown',event=>{if(['ArrowLeft','ArrowRight'].includes(event.key)){event.preventDefault();const next=order[(order.indexOf(scenario)+(event.key==='ArrowRight'?1:order.length-1))%order.length];switchScenario(next);$(`[data-scenario=${next}]`).focus();}});});
   $('#refresh').addEventListener('click',async()=>{ try { await availability(); if(activeRun)update(await api('/api/result?run_id='+encodeURIComponent(activeRun))); }catch(error){$('#run-status').textContent=humanError(error.message);} });
   $('#warmup').addEventListener('click',async()=>{if(busy)return;setBusy(true);$('#cancel').disabled=true;$('#run-status').textContent='Precargando el LLM local. No se envía ninguna evaluación a JEV.';try{const result=await api('/api/warmup',scenario==='photo'?{demo:'photo'}:{});$('#run-status').textContent=`Precarga local: ${formatMs(result.wall_ms)} de tiempo total. Carga del proveedor: ${formatMs(result.load_ms)}. No cuenta como solicitud de evaluación.`;}catch(error){$('#run-status').textContent=humanError(error.message);}finally{setBusy(false);} });
