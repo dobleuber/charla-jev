@@ -146,6 +146,23 @@
     code { font-family:var(--font-mono); font-size:.92em; }
     .mail-instruction code { font-weight:700; color:var(--accent); }
     .demo-launch { display:inline-flex; align-self:flex-start; margin-top:1.4rem; padding:.7rem 1.6rem .7rem 1.2rem; color:var(--on-accent); background:var(--accent); font:800 1.05rem var(--font-mono); letter-spacing:.06em; text-transform:uppercase; text-decoration:none; clip-path:polygon(0 0,100% 0,100% 60%,calc(100% - .8rem) 100%,0 100%); transition:filter .2s; }
+    /* Repository QR: white quiet zone included in the SVG; the slide sits above the scanlines so it scans cleanly. */
+    .slide--qr { z-index:5; }
+    .qr { display:grid; justify-items:center; gap:.7rem; margin:0; }
+    .qr svg { display:block; width:var(--qr-size,12rem); height:auto; box-shadow:0 0 0 1px var(--edge),0 0 1.6rem var(--glow); }
+    .qr figcaption { font:700 .82rem/1.3 var(--font-mono); letter-spacing:.04em; color:var(--soft); text-align:center; }
+    .qr figcaption a { text-decoration:none; }
+    .qr--large { --qr-size:15rem; }
+    .with-qr { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:2.5rem; align-items:center; }
+    .speaker { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:2.5rem; align-items:center; }
+    .speaker .handle { margin-top:1rem; color:var(--accent); font:800 1.3rem var(--font-mono); }
+    .speaker .cards { grid-template-columns:minmax(0,1fr); margin-top:0; }
+    .refs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin-top:1.4rem; }
+    .refs .card h3 { font-size:1.25rem; color:var(--surface-accent); margin-bottom:.6rem; }
+    .refs ul { list-style:none; padding:0; margin:0; }
+    .refs li { padding:.42rem 0; border-top:1px dashed var(--rule); font-size:1rem; line-height:1.3; }
+    .refs li a { display:block; text-decoration:none; }
+    .refs li small { display:block; color:var(--surface-soft); font:600 .78rem/1.3 var(--font-mono); overflow-wrap:anywhere; }
     .demo-launch:hover { filter:brightness(1.15) drop-shadow(0 0 8px var(--accent)); }
 
     .control-bar { position:fixed; left:50%; bottom:.6rem; z-index:10; transform:translateX(-50%); display:flex; align-items:center; gap:.5rem; width:max-content; max-width:calc(100vw - 1rem); padding:.4rem .7rem; color:var(--text); background:#05050bdd; backdrop-filter:blur(6px); box-shadow:inset 0 0 0 1px #00f0ff66, 0 0 18px #00f0ff33; clip-path:polygon(.7rem 0,100% 0,100% calc(100% - .7rem),calc(100% - .7rem) 100%,0 100%,0 .7rem); font:.82rem var(--font-mono); }
@@ -167,6 +184,8 @@
       .slide::before { left:1.3rem; width:5rem; }
       .two,.two--wide,.feature-grid,.mail-map { grid-template-columns:minmax(0,1fr); gap:1rem; }
       .cards { grid-template-columns:minmax(0,1fr); gap:.7rem; }
+      .with-qr,.speaker,.refs { grid-template-columns:minmax(0,1fr); gap:1.2rem; }
+      .qr { justify-items:start; }
       .cards .card { padding:.8rem 1rem; }
       .cards .card .symbol { display:inline; margin-right:.7rem; font-size:1.5rem; }
       .cards--numbered .card .symbol { margin:0; font-size:1.7rem; }
@@ -200,22 +219,42 @@
 </head>
 <body>
   <aside id="file-notice" hidden style="position:fixed;top:8px;left:50%;transform:translateX(-50%);z-index:30;background:#05050b;color:#e4f1ff;padding:8px 14px;border:1px solid #ff2a6d;font-family:monospace;font-size:13px;max-width:90vw">Abriste un archivo local. Para las demos reales, <a href="http://127.0.0.1:8000/index.html">abre la charla por HTTP</a>.</aside>
-  <div class="progress-track" aria-hidden="true"><span id="progress" role="progressbar" aria-valuemin="1" aria-valuemax="18" aria-valuenow="1"></span></div>
+  <div class="progress-track" aria-hidden="true"><span id="progress" role="progressbar" aria-valuemin="1" aria-valuemax="21" aria-valuenow="1"></span></div>
   <main class="viewport" id="deck" aria-label="Presentación sobre JEV y los modelos de decisión">
 
-    <section class="slide slide--dark" id="slide-1" aria-label="Diapositiva de título">
+    <section class="slide slide--dark slide--qr" id="slide-1" data-outline-slide="1" aria-label="Diapositiva de título">
       <div class="mast"><span>MedellínJS / 01</span><span class="kind">Del lenguaje a la acción</span></div>
-      <div class="body">
-        <span class="chip">CUANDO LA IA TOMA LA DECISIÓN</span>
-        <div class="hero-rule"></div>
-        <h1>JEV y<br><span class="accent">los modelos de decisión.</span></h1>
-        <p class="lead">Cuando tu app necesita una respuesta, ¿para qué pedir un párrafo?</p>
+      <div class="body with-qr">
+        <div>
+          <span class="chip">CUANDO LA IA TOMA LA DECISIÓN</span>
+          <div class="hero-rule"></div>
+          <h1>JEV y<br><span class="accent">los modelos de decisión.</span></h1>
+          <p class="lead">Cuando tu app necesita una respuesta, ¿para qué pedir un párrafo?</p>
+        </div>
+        <figure class="qr"><svg viewBox="0 0 37 37" role="img" aria-label="Código QR del repositorio github.com/dobleuber/charla-jev" shape-rendering="crispEdges"><rect width="37" height="37" fill="#fff"/><path stroke="#000" transform="translate(0,.5)" d="M0,0h1M1,0h1M2,0h1M3,0h1M4,0h1M5,0h1M6,0h1M9,0h1M10,0h1M11,0h1M12,0h1M13,0h1M14,0h1M15,0h1M17,0h1M18,0h1M19,0h1M22,0h1M23,0h1M24,0h1M25,0h1M26,0h1M27,0h1M28,0h1M0,1h1M6,1h1M9,1h1M10,1h1M11,1h1M12,1h1M13,1h1M15,1h1M17,1h1M18,1h1M22,1h1M28,1h1M0,2h1M2,2h1M3,2h1M4,2h1M6,2h1M17,2h1M18,2h1M19,2h1M22,2h1M24,2h1M25,2h1M26,2h1M28,2h1M0,3h1M2,3h1M3,3h1M4,3h1M6,3h1M9,3h1M10,3h1M11,3h1M14,3h1M18,3h1M19,3h1M22,3h1M24,3h1M25,3h1M26,3h1M28,3h1M0,4h1M2,4h1M3,4h1M4,4h1M6,4h1M10,4h1M11,4h1M13,4h1M14,4h1M15,4h1M18,4h1M22,4h1M24,4h1M25,4h1M26,4h1M28,4h1M0,5h1M6,5h1M8,5h1M11,5h1M12,5h1M13,5h1M15,5h1M16,5h1M18,5h1M19,5h1M22,5h1M28,5h1M0,6h1M1,6h1M2,6h1M3,6h1M4,6h1M5,6h1M6,6h1M8,6h1M10,6h1M12,6h1M14,6h1M16,6h1M18,6h1M20,6h1M22,6h1M23,6h1M24,6h1M25,6h1M26,6h1M27,6h1M28,6h1M9,7h1M10,7h1M11,7h1M14,7h1M15,7h1M16,7h1M17,7h1M18,7h1M19,7h1M20,7h1M0,8h1M3,8h1M5,8h1M6,8h1M8,8h1M10,8h1M12,8h1M13,8h1M14,8h1M16,8h1M19,8h1M21,8h1M23,8h1M2,9h1M4,9h1M8,9h1M13,9h1M14,9h1M16,9h1M17,9h1M18,9h1M20,9h1M22,9h1M25,9h1M28,9h1M0,10h1M2,10h1M3,10h1M6,10h1M10,10h1M12,10h1M19,10h1M20,10h1M21,10h1M24,10h1M25,10h1M26,10h1M27,10h1M0,11h1M3,11h1M7,11h1M8,11h1M9,11h1M13,11h1M14,11h1M15,11h1M16,11h1M18,11h1M19,11h1M24,11h1M26,11h1M27,11h1M1,12h1M4,12h1M6,12h1M11,12h1M14,12h1M15,12h1M16,12h1M17,12h1M20,12h1M21,12h1M22,12h1M25,12h1M27,12h1M28,12h1M0,13h1M4,13h1M5,13h1M8,13h1M9,13h1M10,13h1M11,13h1M13,13h1M17,13h1M19,13h1M20,13h1M21,13h1M0,14h1M2,14h1M5,14h1M6,14h1M9,14h1M13,14h1M14,14h1M16,14h1M18,14h1M20,14h1M22,14h1M23,14h1M24,14h1M25,14h1M26,14h1M27,14h1M28,14h1M1,15h1M4,15h1M11,15h1M17,15h1M20,15h1M21,15h1M22,15h1M25,15h1M27,15h1M0,16h1M1,16h1M2,16h1M5,16h1M6,16h1M7,16h1M8,16h1M9,16h1M11,16h1M12,16h1M13,16h1M16,16h1M17,16h1M20,16h1M23,16h1M27,16h1M2,17h1M7,17h1M8,17h1M9,17h1M10,17h1M11,17h1M13,17h1M14,17h1M16,17h1M20,17h1M21,17h1M22,17h1M23,17h1M25,17h1M28,17h1M0,18h1M3,18h1M5,18h1M6,18h1M7,18h1M8,18h1M14,18h1M21,18h1M23,18h1M24,18h1M27,18h1M28,18h1M2,19h1M5,19h1M8,19h1M10,19h1M14,19h1M15,19h1M16,19h1M17,19h1M18,19h1M20,19h1M21,19h1M23,19h1M24,19h1M27,19h1M28,19h1M0,20h1M3,20h1M4,20h1M6,20h1M10,20h1M11,20h1M12,20h1M16,20h1M19,20h1M20,20h1M21,20h1M22,20h1M23,20h1M24,20h1M26,20h1M8,21h1M9,21h1M10,21h1M11,21h1M12,21h1M14,21h1M16,21h1M17,21h1M18,21h1M19,21h1M20,21h1M24,21h1M26,21h1M27,21h1M28,21h1M0,22h1M1,22h1M2,22h1M3,22h1M4,22h1M5,22h1M6,22h1M9,22h1M11,22h1M17,22h1M18,22h1M20,22h1M22,22h1M24,22h1M27,22h1M0,23h1M6,23h1M8,23h1M10,23h1M11,23h1M12,23h1M14,23h1M15,23h1M20,23h1M24,23h1M25,23h1M26,23h1M28,23h1M0,24h1M2,24h1M3,24h1M4,24h1M6,24h1M9,24h1M12,24h1M15,24h1M16,24h1M17,24h1M18,24h1M20,24h1M21,24h1M22,24h1M23,24h1M24,24h1M27,24h1M28,24h1M0,25h1M2,25h1M3,25h1M4,25h1M6,25h1M8,25h1M10,25h1M12,25h1M19,25h1M20,25h1M22,25h1M23,25h1M24,25h1M25,25h1M26,25h1M27,25h1M0,26h1M2,26h1M3,26h1M4,26h1M6,26h1M11,26h1M12,26h1M14,26h1M19,26h1M20,26h1M24,26h1M25,26h1M26,26h1M28,26h1M0,27h1M6,27h1M13,27h1M17,27h1M18,27h1M19,27h1M20,27h1M21,27h1M24,27h1M27,27h1M0,28h1M1,28h1M2,28h1M3,28h1M4,28h1M5,28h1M6,28h1M8,28h1M9,28h1M10,28h1M17,28h1M20,28h1M21,28h1M22,28h1M23,28h1M24,28h1M25,28h1M27,28h1"/></svg><figcaption><a href="https://github.com/dobleuber/charla-jev" target="_blank" rel="noopener noreferrer">github.com/dobleuber/charla-jev</a></figcaption></figure>
       </div>
       <div class="bottom"><span class="source">Juicios para el software, no prosa para personas.</span></div>
     </section>
 
-    <section class="slide slide--cream" id="slide-2" aria-label="El problema con forma de decisión" hidden>
-      <div class="mast"><span>El problema / 02</span><span class="kind">Un mensaje, tres decisiones</span></div>
+    <section class="slide slide--blue" id="slide-2" data-outline-slide="1" aria-label="Quién soy" hidden>
+      <div class="mast"><span>Quién soy / 02</span><span class="kind">Hola, MedellínJS</span></div>
+      <div class="body speaker">
+        <div>
+          <span class="chip">PONENTE</span>
+          <h2 style="margin-top:1rem">Wbert Adrian<br><span class="accent">Castro Vera</span></h2>
+          <p class="lead">FullStack AI Developer en <span class="accent">NodeSource</span>.</p>
+          <p class="handle">@dobleuber</p>
+        </div>
+        <div class="cards">
+          <div class="card"><strong>Qué hago</strong><p>Desarrollo full stack con IA, con muchos años de experiencia.</p></div>
+          <div class="card"><strong>Qué me apasiona</strong><p>La inteligencia artificial y la robótica: llevo muchos años estudiándolas.</p></div>
+          <div class="card"><strong>Dónde encontrarme</strong><p>github.com/dobleuber</p></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="slide slide--cream" id="slide-3" data-outline-slide="2" aria-label="El problema con forma de decisión" hidden>
+      <div class="mast"><span>El problema / 03</span><span class="kind">Un mensaje, tres decisiones</span></div>
       <div class="body">
         <h2>No todo mensaje<br>necesita una respuesta.</h2>
         <blockquote class="question">“La compra lleva tres días fallando. Estamos perdiendo ventas. Estoy furioso. Por favor, ayúdennos hoy.”</blockquote>
@@ -228,8 +267,8 @@
       <div class="bottom"><span class="source">El mensaje es evidencia. La acción sigue siendo responsabilidad de la aplicación.</span></div>
     </section>
 
-    <section class="slide slide--lime" id="slide-3" aria-label="Qué hace un modelo de decisión" hidden>
-      <div class="mast"><span>Idea central / 03</span><span class="kind">Juicio acotado</span></div>
+    <section class="slide slide--lime" id="slide-4" data-outline-slide="3" aria-label="Qué hace un modelo de decisión" hidden>
+      <div class="mast"><span>Idea central / 04</span><span class="kind">Juicio acotado</span></div>
       <div class="body">
         <h2>Pide un <span class="accent">juicio</span>.<br>Recibe una respuesta tipada.</h2>
         <div class="flow" aria-label="Del estado y la pregunta a Jev, a la respuesta y a la política de la aplicación">
@@ -243,8 +282,8 @@
       <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Documentación de TypeSafe</a></span></div>
     </section>
 
-    <section class="slide" id="slide-4" aria-label="Primitivas de Jev" hidden>
-      <div class="mast"><span>Interfaz de Jev / 04</span><span class="kind">Tres preguntas tipadas</span></div>
+    <section class="slide" id="slide-5" data-outline-slide="4" aria-label="Primitivas de Jev" hidden>
+      <div class="mast"><span>Interfaz de Jev / 05</span><span class="kind">Tres preguntas tipadas</span></div>
       <div class="body">
         <h2>Tres formas de preguntar.</h2>
         <div class="cards">
@@ -257,8 +296,8 @@
       <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Primitivas de TypeSafe</a> · El valor de Noul no es el mismo campo de respuesta que la confianza de Choice.</span></div>
     </section>
 
-    <section class="slide slide--dark" id="slide-5" aria-label="Relación con los clasificadores tradicionales" hidden>
-      <div class="mast"><span>Contexto / 05</span><span class="kind">No es una nueva definición de clasificación</span></div>
+    <section class="slide slide--dark" id="slide-6" data-outline-slide="5" aria-label="Relación con los clasificadores tradicionales" hidden>
+      <div class="mast"><span>Contexto / 06</span><span class="kind">No es una nueva definición de clasificación</span></div>
       <div class="body">
         <h2>Ya teníamos<br><span class="accent">clasificadores.</span></h2>
         <div class="feature-grid">
@@ -270,8 +309,8 @@
       <div class="bottom"><span class="source">Interfaz novedosa, responsabilidades estadísticas conocidas.</span></div>
     </section>
 
-    <section class="slide slide--cream" id="slide-6" aria-label="Modelos de lenguaje y modelos de decisión" hidden>
-      <div class="mast"><span>Contexto / 06</span><span class="kind">Una salida por defecto distinta</span></div>
+    <section class="slide slide--cream" id="slide-7" data-outline-slide="6" aria-label="Modelos de lenguaje y modelos de decisión" hidden>
+      <div class="mast"><span>Contexto / 07</span><span class="kind">Una salida por defecto distinta</span></div>
       <div class="body">
         <h2>El texto no siempre es<br>el producto.</h2>
         <div class="feature-grid">
@@ -283,8 +322,8 @@
       <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Visión general de los modelos de TypeSafe</a></span></div>
     </section>
 
-    <section class="slide slide--blue" id="slide-7" aria-label="Preguntas de la demo del ticket de soporte" hidden>
-      <div class="mast"><span>Demo 01 / 07</span><span class="kind">Triaje de tickets · la entrada</span></div>
+    <section class="slide slide--blue" id="slide-8" data-outline-slide="7" aria-label="Preguntas de la demo del ticket de soporte" hidden>
+      <div class="mast"><span>Demo 01 / 08</span><span class="kind">Triaje de tickets · la entrada</span></div>
       <div class="body two">
         <div>
           <span class="example-mark">Caso 1</span>
@@ -300,8 +339,8 @@
       </div>
     </section>
 
-    <section class="slide" id="slide-8" data-outline-slide="7" aria-label="Forma de la solicitud y la respuesta de Jev" hidden>
-      <div class="mast"><span>Demo 01 / 08</span><span class="kind">Triaje de tickets · la llamada</span></div>
+    <section class="slide" id="slide-9" data-outline-slide="7" aria-label="Forma de la solicitud y la respuesta de Jev" hidden>
+      <div class="mast"><span>Demo 01 / 09</span><span class="kind">Triaje de tickets · la llamada</span></div>
       <div class="body two two--wide">
         <div>
           <h2>Haz que la pregunta sea<br><span class="accent">explícita.</span></h2>
@@ -329,8 +368,8 @@
       <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/introduction/quickstart" target="_blank" rel="noopener noreferrer">Esquema de la API</a></span></div>
     </section>
 
-    <section class="slide demo-slide" id="slide-9" data-outline-slide="8" aria-label="Recorrido animado de selección de candidatos" hidden>
-      <div class="mast"><span>Demo 02 / 09</span><span class="kind">Solicitud → candidato</span></div>
+    <section class="slide demo-slide" id="slide-10" data-outline-slide="8" aria-label="Recorrido animado de selección de candidatos" hidden>
+      <div class="mast"><span>Demo 02 / 10</span><span class="kind">Solicitud → candidato</span></div>
       <div class="body">
         <h2>Una coincidencia, o <span class="accent">ninguna respuesta respaldada.</span></h2>
         <div class="decision-demo" data-decision-demo="catalog"></div>
@@ -338,8 +377,8 @@
       <div class="bottom"><span class="source"><a href="https://madewithjev.com/" target="_blank" rel="noopener noreferrer">Made with Jev: ejemplos de la comunidad</a></span></div>
     </section>
 
-    <section class="slide slide--dark demo-slide" id="slide-10" data-outline-slide="9" aria-label="Recorrido animado de reclamo y revisión" hidden>
-      <div class="mast"><span>Demo 03 / 10</span><span class="kind">Reclamo → revisión</span></div>
+    <section class="slide slide--dark demo-slide" id="slide-11" data-outline-slide="9" aria-label="Recorrido animado de reclamo y revisión" hidden>
+      <div class="mast"><span>Demo 03 / 11</span><span class="kind">Reclamo → revisión</span></div>
       <div class="body">
         <h2>Un reclamo no es <span class="accent">un hecho verificado.</span></h2>
         <div class="decision-demo" data-decision-demo="review"></div>
@@ -347,10 +386,10 @@
       <div class="bottom"><span class="source">Nunca emitas un reembolso basándote solo en la lectura que hace un modelo de un mensaje.</span></div>
     </section>
 
-    <section class="slide slide--lime" id="slide-11" data-outline-slide="10" aria-label="Abrir comparación real ticket" hidden><div class="mast"><span>Demo 01 en vivo / 11</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Un ticket. Tres decisiones.</h2><p class="lead">La misma entrada para JEV y un LLM local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>Categoría: Choice</strong></div><div class="card"><span class="symbol">02</span><strong>Frustración: Score</strong></div><div class="card"><span class="symbol">03</span><strong>Urgencia: Noul</strong></div></div><a class="demo-launch" href="demos.html#ticket">Abrir la demo y comparar →</a></div></section>
+    <section class="slide slide--lime" id="slide-12" data-outline-slide="10" aria-label="Abrir comparación real ticket" hidden><div class="mast"><span>Demo 01 en vivo / 12</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Un ticket. Tres decisiones.</h2><p class="lead">La misma entrada para JEV y un LLM local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>Categoría: Choice</strong></div><div class="card"><span class="symbol">02</span><strong>Frustración: Score</strong></div><div class="card"><span class="symbol">03</span><strong>Urgencia: Noul</strong></div></div><a class="demo-launch" href="demos.html#ticket">Abrir la demo y comparar →</a></div></section>
 
-    <section class="slide slide--cream" id="slide-12" data-outline-slide="11" aria-label="Cinco correos y cinco preguntas dirigidas en una solicitud" hidden>
-      <div class="mast"><span>Extensión de correo / 12</span><span class="kind">Un estado compartido</span></div>
+    <section class="slide slide--cream" id="slide-13" data-outline-slide="11" aria-label="Cinco correos y cinco preguntas dirigidas en una solicitud" hidden>
+      <div class="mast"><span>Extensión de correo / 13</span><span class="kind">Un estado compartido</span></div>
       <div class="body">
         <h2>Cinco correos. <span class="accent">Una solicitud.</span></h2>
         <div class="mail-map">
@@ -365,12 +404,12 @@
       </div>
     </section>
 
-    <section class="slide " id="slide-13" data-outline-slide="12" aria-label="Abrir comparación real correos" hidden><div class="mast"><span>Extensión de correo en vivo / 13</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Cinco correos. Un envío.</h2><p class="lead">Cinco preguntas explícitas sobre un único lote.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>e01–e05: estado compartido</strong></div><div class="card"><span class="symbol">02</span><strong>5 respuestas en una petición</strong></div><div class="card"><span class="symbol">03</span><strong>El código agrupa con un corte</strong></div></div><a class="demo-launch" href="demos.html#correos">Abrir la demo y comparar →</a></div></section>
+    <section class="slide " id="slide-14" data-outline-slide="12" aria-label="Abrir comparación real correos" hidden><div class="mast"><span>Extensión de correo en vivo / 14</span><span class="kind">Página dedicada · ejecución real</span></div><div class="body"><span class="example-mark">MedellínJS · JavaScript</span><h2 style="margin-top:1rem">Cinco correos. Un envío.</h2><p class="lead">Cinco preguntas explícitas sobre un único lote.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>e01–e05: estado compartido</strong></div><div class="card"><span class="symbol">02</span><strong>5 respuestas en una petición</strong></div><div class="card"><span class="symbol">03</span><strong>El código agrupa con un corte</strong></div></div><a class="demo-launch" href="demos.html#correos">Abrir la demo y comparar →</a></div></section>
 
-    <section class="slide slide--dark" id="slide-14" data-outline-slide="13" aria-label="Abrir comparación real reclamo con foto" hidden><div class="mast"><span>Demo foto en vivo / 14</span><span class="kind">Página dedicada · experimental</span></div><div class="body"><span class="example-mark">Jev 1.14 · imágenes</span><h2 style="margin-top:1rem">Una foto. Cuatro decisiones.</h2><p class="lead">La misma imagen para JEV y un LLM multimodal local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>¿Hay daño y de qué tipo? · Noul + Choice</strong></div><div class="card"><span class="symbol">02</span><strong>¿Coincide con el reclamo? · Noul</strong></div><div class="card"><span class="symbol">03</span><strong>¿Dónde está el daño? · Box</strong></div></div><a class="demo-launch" href="demos.html#foto">Abrir la demo y comparar →</a></div></section>
+    <section class="slide slide--dark" id="slide-15" data-outline-slide="13" aria-label="Abrir comparación real reclamo con foto" hidden><div class="mast"><span>Demo foto en vivo / 15</span><span class="kind">Página dedicada · experimental</span></div><div class="body"><span class="example-mark">Jev 1.14 · imágenes</span><h2 style="margin-top:1rem">Una foto. Cuatro decisiones.</h2><p class="lead">La misma imagen para JEV y un LLM multimodal local.</p><div class="cards"><div class="card"><span class="symbol">01</span><strong>¿Hay daño y de qué tipo? · Noul + Choice</strong></div><div class="card"><span class="symbol">02</span><strong>¿Coincide con el reclamo? · Noul</strong></div><div class="card"><span class="symbol">03</span><strong>¿Dónde está el daño? · Box</strong></div></div><a class="demo-launch" href="demos.html#foto">Abrir la demo y comparar →</a></div></section>
 
-    <section class="slide slide--cream" id="slide-15" data-outline-slide="14" aria-label="Qué es realmente nuevo" hidden>
-      <div class="mast"><span>Perspectiva / 15</span><span class="kind">El cambio útil</span></div>
+    <section class="slide slide--cream" id="slide-16" data-outline-slide="14" aria-label="Qué es realmente nuevo" hidden>
+      <div class="mast"><span>Perspectiva / 16</span><span class="kind">El cambio útil</span></div>
       <div class="body">
         <h2>La clasificación no es nueva.<br><span class="accent">La interfaz sí.</span></h2>
         <div class="steps">
@@ -383,8 +422,8 @@
       <div class="bottom"><span class="source"><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Documentación de TypeSafe</a></span></div>
     </section>
 
-    <section class="slide" id="slide-16" data-outline-slide="15" aria-label="Límites y evaluación" hidden>
-      <div class="mast"><span>Polo a tierra / 16</span><span class="kind">Antes de producción</span></div>
+    <section class="slide" id="slide-17" data-outline-slide="15" aria-label="Límites y evaluación" hidden>
+      <div class="mast"><span>Polo a tierra / 17</span><span class="kind">Antes de producción</span></div>
       <div class="body">
         <h2>Una respuesta tipada<br>igual puede estar <span class="accent">equivocada.</span></h2>
         <div class="checks">
@@ -396,8 +435,8 @@
       </div>
     </section>
 
-    <section class="slide slide--blue" id="slide-17" data-outline-slide="16" aria-label="Proveedores y alternativas abiertas de modelos de decisión" hidden>
-      <div class="mast"><span>Elige tu configuración / 17</span><span class="kind">Sin comparativa</span></div>
+    <section class="slide slide--blue" id="slide-18" data-outline-slide="16" aria-label="Proveedores y alternativas abiertas de modelos de decisión" hidden>
+      <div class="mast"><span>Elige tu configuración / 18</span><span class="kind">Sin comparativa</span></div>
       <div class="body">
         <h2>Fácil de usar. O más <span class="accent">control.</span></h2>
         <div class="feature-grid">
@@ -416,8 +455,8 @@
       <div class="bottom"><span class="source"><a href="https://developers.openai.com/api/docs/guides/decisions" target="_blank" rel="noopener noreferrer">OpenAI Decisions</a> · <a href="https://blog.cloudflare.com/clef-decision-models/" target="_blank" rel="noopener noreferrer">Cloudflare Clef</a> · <a href="https://ai.azure.com/catalog/models/Microsoft-Decision-1" target="_blank" rel="noopener noreferrer">Microsoft-Decision-1</a> · <a href="https://github.com/jaredpalmer/kev" target="_blank" rel="noopener noreferrer">KEV</a> · <a href="https://brainfunctioncollapse.com/laya" target="_blank" rel="noopener noreferrer">Laya</a></span></div>
     </section>
 
-    <section class="slide slide--dark" id="slide-18" data-outline-slide="17" aria-label="Conclusiones y preguntas" hidden>
-      <div class="mast"><span>Conclusión / 18</span><span class="kind">Preguntas y discusión</span></div>
+    <section class="slide slide--dark" id="slide-19" data-outline-slide="17" aria-label="Conclusiones y preguntas" hidden>
+      <div class="mast"><span>Conclusión / 19</span><span class="kind">Para llevar</span></div>
       <div class="body">
         <h2>El modelo emite un<br><span class="accent">juicio.</span><br>Nosotros decidimos qué puede hacer.</h2>
         <div class="cards">
@@ -428,10 +467,29 @@
         <p class="lead">¿Qué decisión nunca automatizarías?</p>
       </div>
     </section>
+
+    <section class="slide slide--dark slide--qr" id="slide-20" data-outline-slide="18" aria-label="Preguntas" hidden>
+      <div class="mast"><span>Preguntas / 20</span><span class="kind">Gracias</span></div>
+      <div class="body with-qr">
+        <div>
+          <h1>¿<span class="accent">Preguntas</span>?</h1>
+          <p class="lead">Gracias, MedellínJS. Las diapositivas, las notas y el código de las demos están en el repositorio.</p>
+        </div>
+        <figure class="qr qr--large"><svg viewBox="0 0 37 37" role="img" aria-label="Código QR del repositorio github.com/dobleuber/charla-jev" shape-rendering="crispEdges"><rect width="37" height="37" fill="#fff"/><path stroke="#000" transform="translate(0,.5)" d="M0,0h1M1,0h1M2,0h1M3,0h1M4,0h1M5,0h1M6,0h1M9,0h1M10,0h1M11,0h1M12,0h1M13,0h1M14,0h1M15,0h1M17,0h1M18,0h1M19,0h1M22,0h1M23,0h1M24,0h1M25,0h1M26,0h1M27,0h1M28,0h1M0,1h1M6,1h1M9,1h1M10,1h1M11,1h1M12,1h1M13,1h1M15,1h1M17,1h1M18,1h1M22,1h1M28,1h1M0,2h1M2,2h1M3,2h1M4,2h1M6,2h1M17,2h1M18,2h1M19,2h1M22,2h1M24,2h1M25,2h1M26,2h1M28,2h1M0,3h1M2,3h1M3,3h1M4,3h1M6,3h1M9,3h1M10,3h1M11,3h1M14,3h1M18,3h1M19,3h1M22,3h1M24,3h1M25,3h1M26,3h1M28,3h1M0,4h1M2,4h1M3,4h1M4,4h1M6,4h1M10,4h1M11,4h1M13,4h1M14,4h1M15,4h1M18,4h1M22,4h1M24,4h1M25,4h1M26,4h1M28,4h1M0,5h1M6,5h1M8,5h1M11,5h1M12,5h1M13,5h1M15,5h1M16,5h1M18,5h1M19,5h1M22,5h1M28,5h1M0,6h1M1,6h1M2,6h1M3,6h1M4,6h1M5,6h1M6,6h1M8,6h1M10,6h1M12,6h1M14,6h1M16,6h1M18,6h1M20,6h1M22,6h1M23,6h1M24,6h1M25,6h1M26,6h1M27,6h1M28,6h1M9,7h1M10,7h1M11,7h1M14,7h1M15,7h1M16,7h1M17,7h1M18,7h1M19,7h1M20,7h1M0,8h1M3,8h1M5,8h1M6,8h1M8,8h1M10,8h1M12,8h1M13,8h1M14,8h1M16,8h1M19,8h1M21,8h1M23,8h1M2,9h1M4,9h1M8,9h1M13,9h1M14,9h1M16,9h1M17,9h1M18,9h1M20,9h1M22,9h1M25,9h1M28,9h1M0,10h1M2,10h1M3,10h1M6,10h1M10,10h1M12,10h1M19,10h1M20,10h1M21,10h1M24,10h1M25,10h1M26,10h1M27,10h1M0,11h1M3,11h1M7,11h1M8,11h1M9,11h1M13,11h1M14,11h1M15,11h1M16,11h1M18,11h1M19,11h1M24,11h1M26,11h1M27,11h1M1,12h1M4,12h1M6,12h1M11,12h1M14,12h1M15,12h1M16,12h1M17,12h1M20,12h1M21,12h1M22,12h1M25,12h1M27,12h1M28,12h1M0,13h1M4,13h1M5,13h1M8,13h1M9,13h1M10,13h1M11,13h1M13,13h1M17,13h1M19,13h1M20,13h1M21,13h1M0,14h1M2,14h1M5,14h1M6,14h1M9,14h1M13,14h1M14,14h1M16,14h1M18,14h1M20,14h1M22,14h1M23,14h1M24,14h1M25,14h1M26,14h1M27,14h1M28,14h1M1,15h1M4,15h1M11,15h1M17,15h1M20,15h1M21,15h1M22,15h1M25,15h1M27,15h1M0,16h1M1,16h1M2,16h1M5,16h1M6,16h1M7,16h1M8,16h1M9,16h1M11,16h1M12,16h1M13,16h1M16,16h1M17,16h1M20,16h1M23,16h1M27,16h1M2,17h1M7,17h1M8,17h1M9,17h1M10,17h1M11,17h1M13,17h1M14,17h1M16,17h1M20,17h1M21,17h1M22,17h1M23,17h1M25,17h1M28,17h1M0,18h1M3,18h1M5,18h1M6,18h1M7,18h1M8,18h1M14,18h1M21,18h1M23,18h1M24,18h1M27,18h1M28,18h1M2,19h1M5,19h1M8,19h1M10,19h1M14,19h1M15,19h1M16,19h1M17,19h1M18,19h1M20,19h1M21,19h1M23,19h1M24,19h1M27,19h1M28,19h1M0,20h1M3,20h1M4,20h1M6,20h1M10,20h1M11,20h1M12,20h1M16,20h1M19,20h1M20,20h1M21,20h1M22,20h1M23,20h1M24,20h1M26,20h1M8,21h1M9,21h1M10,21h1M11,21h1M12,21h1M14,21h1M16,21h1M17,21h1M18,21h1M19,21h1M20,21h1M24,21h1M26,21h1M27,21h1M28,21h1M0,22h1M1,22h1M2,22h1M3,22h1M4,22h1M5,22h1M6,22h1M9,22h1M11,22h1M17,22h1M18,22h1M20,22h1M22,22h1M24,22h1M27,22h1M0,23h1M6,23h1M8,23h1M10,23h1M11,23h1M12,23h1M14,23h1M15,23h1M20,23h1M24,23h1M25,23h1M26,23h1M28,23h1M0,24h1M2,24h1M3,24h1M4,24h1M6,24h1M9,24h1M12,24h1M15,24h1M16,24h1M17,24h1M18,24h1M20,24h1M21,24h1M22,24h1M23,24h1M24,24h1M27,24h1M28,24h1M0,25h1M2,25h1M3,25h1M4,25h1M6,25h1M8,25h1M10,25h1M12,25h1M19,25h1M20,25h1M22,25h1M23,25h1M24,25h1M25,25h1M26,25h1M27,25h1M0,26h1M2,26h1M3,26h1M4,26h1M6,26h1M11,26h1M12,26h1M14,26h1M19,26h1M20,26h1M24,26h1M25,26h1M26,26h1M28,26h1M0,27h1M6,27h1M13,27h1M17,27h1M18,27h1M19,27h1M20,27h1M21,27h1M24,27h1M27,27h1M0,28h1M1,28h1M2,28h1M3,28h1M4,28h1M5,28h1M6,28h1M8,28h1M9,28h1M10,28h1M17,28h1M20,28h1M21,28h1M22,28h1M23,28h1M24,28h1M25,28h1M27,28h1"/></svg><figcaption><a href="https://github.com/dobleuber/charla-jev" target="_blank" rel="noopener noreferrer">github.com/dobleuber/charla-jev</a></figcaption></figure>
+      </div>
+    </section>
+
+    <section class="slide" id="slide-21" data-outline-slide="18" aria-label="Referencias" hidden>
+      <div class="mast"><span>Referencias / 21</span><span class="kind">Para seguir leyendo</span></div>
+      <div class="body">
+        <h2>Referencias.</h2>
+        <div class="refs"><div class="card"><h3>JEV y TypeSafe</h3><ul><li><a href="https://docs.typesafe.ai/" target="_blank" rel="noopener noreferrer">Documentación de TypeSafe<small>docs.typesafe.ai</small></a></li><li><a href="https://docs.typesafe.ai/api" target="_blank" rel="noopener noreferrer">API y esquema de solicitud<small>docs.typesafe.ai/api</small></a></li><li><a href="https://docs.typesafe.ai/primitives" target="_blank" rel="noopener noreferrer">Primitivas: Choice, Score, Noul y Box<small>docs.typesafe.ai/primitives</small></a></li><li><a href="https://docs.typesafe.ai/images" target="_blank" rel="noopener noreferrer">Estado e imágenes<small>docs.typesafe.ai/images</small></a></li><li><a href="https://madewithjev.com/" target="_blank" rel="noopener noreferrer">Made with Jev<small>madewithjev.com</small></a></li></ul></div><div class="card"><h3>Otros modelos de decisión</h3><ul><li><a href="https://developers.openai.com/api/docs/guides/decisions" target="_blank" rel="noopener noreferrer">OpenAI Decisions API<small>developers.openai.com</small></a></li><li><a href="https://blog.cloudflare.com/clef-decision-models/" target="_blank" rel="noopener noreferrer">Cloudflare Clef<small>blog.cloudflare.com</small></a></li><li><a href="https://ai.azure.com/catalog/models/Microsoft-Decision-1" target="_blank" rel="noopener noreferrer">Microsoft-Decision-1<small>ai.azure.com</small></a></li><li><a href="https://github.com/jaredpalmer/kev" target="_blank" rel="noopener noreferrer">KEV<small>github.com/jaredpalmer/kev</small></a></li><li><a href="https://brainfunctioncollapse.com/laya" target="_blank" rel="noopener noreferrer">Laya<small>brainfunctioncollapse.com/laya</small></a></li></ul></div><div class="card"><h3>Las demos</h3><ul><li><a href="https://github.com/dobleuber/charla-jev" target="_blank" rel="noopener noreferrer">Este repositorio<small>github.com/dobleuber/charla-jev</small></a></li><li><a href="https://docs.ollama.com/capabilities/structured-outputs" target="_blank" rel="noopener noreferrer">Salidas estructuradas de Ollama<small>docs.ollama.com</small></a></li><li><a href="https://ollama.com/library/qwen3:1.7b" target="_blank" rel="noopener noreferrer">Qwen3 1.7B<small>ollama.com/library/qwen3</small></a></li><li><a href="https://ollama.com/library/qwen3-vl" target="_blank" rel="noopener noreferrer">Qwen3-VL<small>ollama.com/library/qwen3-vl</small></a></li></ul></div></div>
+      </div>
+    </section>
   </main>
   <nav class="control-bar" aria-label="Controles de diapositivas">
     <button id="previous" type="button" aria-label="Diapositiva anterior" disabled>←</button>
-    <span id="slide-counter" aria-live="polite">01 / 18</span>
+    <span id="slide-counter" aria-live="polite">01 / 21</span>
     <button id="next" type="button" aria-label="Diapositiva siguiente">→</button>
     <a id="speaker-notes" href="outline.html#slide-1" target="_blank" rel="noopener noreferrer">Notas ↗</a>
     <span class="control-hint">← → o espacio para navegar</span>

@@ -8,7 +8,7 @@ test('all slides fit horizontally at desktop, tablet and narrow mobile widths', 
     const problems = [];
     for (const [width, height] of [[1365, 768], [1024, 768], [390, 844], [320, 740]]) {
       await resize(width, height);
-      for (let number = 1; number <= 18; number++) {
+      for (let number = 1; number <= 21; number++) {
         await go(number);
         const result = await evaluate(`(() => {
           const slide = document.querySelector('.slide:not([hidden])');
@@ -20,7 +20,7 @@ test('all slides fit horizontally at desktop, tablet and narrow mobile widths', 
     assert.deepEqual(problems, [], 'horizontal overflow must be fixed at its source, including slide scroll containers');
     for (const [width, height] of [[1365, 768], [1024, 768], [390, 844]]) {
       await resize(width, height);
-      for (const number of [9, 10]) {
+      for (const number of [10, 11]) {
         await go(number);
         const cases = await evaluate(`[...document.querySelector('#slide-${number} select').options].map(option => option.value)`);
         for (const key of cases) {

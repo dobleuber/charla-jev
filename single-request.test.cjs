@@ -48,8 +48,8 @@ test('one collection payload targets each email explicitly and groups every retu
 
 test('slides link to the dedicated real demos without initiating evaluations', {timeout:30000}, async () => {
   await withBrowser(async ({evaluate,go}) => {
-    assert.equal(await evaluate('document.querySelectorAll(".slide").length'),18);
-    for (const [number,hash] of [[11,'ticket'],[13,'correos'],[14,'foto']]) {
+    assert.equal(await evaluate('document.querySelectorAll(".slide").length'),21);
+    for (const [number,hash] of [[12,'ticket'],[14,'correos'],[15,'foto']]) {
       await go(number);
       assert.equal(await evaluate(`document.querySelector('#slide-${number} .demo-launch').getAttribute('href')`),`demos.html#${hash}`);
       assert.equal(await evaluate(`document.querySelectorAll('#slide-${number} [data-action=play],#slide-${number} .comparison-dialog').length`),0);

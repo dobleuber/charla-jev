@@ -4,7 +4,7 @@
   const categories = { billing: 'Facturación', technical: 'Soporte técnico', review: 'Revisión humana' };
   const events = { preparing: 'Preparando envío', request_started: 'HTTP iniciado', waiting_response: 'Esperando respuesta', response_received: 'Respuesta recibida', schema_check: 'Validando estructura', schema_valid: 'Estructura válida', result: 'Resultados listos', error: 'No completado' };
   const hashes = { ticket: 'ticket', mail: 'correos', photo: 'foto' }, order = ['ticket', 'mail', 'photo'];
-  const backSlides = { ticket: 11, mail: 13, photo: 14 };
+  const backSlides = { ticket: 12, mail: 14, photo: 15 };
   const damageTypes = { caja: 'Daño en la caja o el empaque', producto: 'Daño en el producto', no_visible: 'No se ve daño' };
   const routes = { review_with_evidence: 'Revisión prioritaria con la foto como evidencia', manual_review: 'Revisión manual', request_more_info: 'Pedir otra foto o más detalles' };
   let scenario = Object.keys(hashes).find(key => location.hash === '#' + hashes[key]) ?? 'ticket';
