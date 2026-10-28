@@ -154,9 +154,35 @@
     .qr figcaption a { text-decoration:none; }
     .qr--large { --qr-size:15rem; }
     .with-qr { display:grid; grid-template-columns:minmax(0,1fr) auto; gap:2.5rem; align-items:center; }
-    .speaker { display:grid; grid-template-columns:minmax(0,1.1fr) minmax(0,1fr); gap:2.5rem; align-items:center; }
-    .speaker .handle { margin-top:1rem; color:var(--accent); font:800 1.3rem var(--font-mono); }
-    .speaker .cards { grid-template-columns:minmax(0,1fr); margin-top:0; }
+    /* Speaker slide: an ID card and a terminal that types itself out. */
+    .speaker { display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1.08fr); gap:2rem; align-items:center; }
+    .id-card, .terminal { position:relative; clip-path:polygon(0 0,calc(100% - 1.4rem) 0,100% 1.4rem,100% 100%,1.4rem 100%,0 calc(100% - 1.4rem)); }
+    .id-card { padding:1.5rem 1.7rem 1.7rem; background:linear-gradient(160deg,#241452,#120a2a 60%); box-shadow:inset 0 0 0 1px var(--edge), inset 0 3px 0 var(--cyan); }
+    .id-top { display:flex; justify-content:space-between; gap:1rem; padding-bottom:.8rem; margin-bottom:1.3rem; border-bottom:1px dashed var(--rule); color:var(--yellow); font:800 .72rem/1.2 var(--font-mono); letter-spacing:.16em; }
+    .id-main { display:grid; grid-template-columns:auto minmax(0,1fr); gap:1.3rem; align-items:center; }
+    .monogram { display:grid; place-items:center; width:6.4rem; aspect-ratio:1; color:#05050b; background:linear-gradient(135deg,var(--cyan),var(--magenta)); font:800 2.4rem/1 var(--font-mono); letter-spacing:-.04em; clip-path:polygon(25% 0,75% 0,100% 50%,75% 100%,25% 100%,0 50%); filter:drop-shadow(0 0 .8rem #00f0ff88); }
+    .id-card h2 { font-size:2.5rem; }
+    .role { margin-top:.5rem; color:var(--soft); font-size:1.3rem; line-height:1.3; }
+    .id-tags { display:flex; flex-wrap:wrap; gap:.5rem; margin-top:1.4rem; }
+    .tag { padding:.28rem .75rem; color:var(--cyan); background:#00f0ff14; border:1px solid #00f0ff66; font:700 .82rem var(--font-mono); letter-spacing:.06em; }
+    .tag--hot { color:#05050b; background:var(--yellow); border-color:var(--yellow); box-shadow:0 0 .8rem #fcee0a66; }
+    .tag--pink { color:var(--magenta); background:#ff2a6d14; border-color:#ff2a6d77; }
+    .id-handle { margin-top:1.2rem; color:var(--cyan); font:800 1.05rem var(--font-mono); }
+    .id-handle span { color:var(--soft); font-weight:600; }
+    .terminal { background:#020207; box-shadow:inset 0 0 0 1px #00f0ff55, 0 0 2.4rem #00f0ff1f; }
+    .terminal-bar { display:flex; align-items:center; gap:.45rem; padding:.6rem 1rem; border-bottom:1px solid #00f0ff33; color:var(--dim); font:700 .75rem var(--font-mono); }
+    .terminal-bar i { width:.65rem; height:.65rem; border-radius:50%; background:var(--magenta); }
+    .terminal-bar i:nth-child(2) { background:var(--yellow); }
+    .terminal-bar i:nth-child(3) { background:var(--cyan); }
+    .terminal-bar span { margin-left:auto; }
+    .terminal pre { padding:1.1rem 1.4rem 1.3rem; color:#bdf8ff; font:600 1.02rem/1.75 var(--font-mono); letter-spacing:0; }
+    .t-line { display:block; opacity:0; animation:type-in .01s linear forwards; animation-delay:calc(var(--d) * .32s + .2s); }
+    .t-line b { color:var(--magenta); }
+    .t-line.out { color:var(--text); }
+    .t-line.dim { color:var(--dim); }
+    .t-line.hl { color:var(--yellow); text-shadow:0 0 .5rem #fcee0a88; }
+    .t-cursor { color:var(--cyan); animation:blink 1.1s steps(1) infinite; }
+    @keyframes type-in { to { opacity:1; } }
     .refs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin-top:1.4rem; }
     .refs .card h3 { font-size:1.25rem; color:var(--surface-accent); margin-bottom:.6rem; }
     .refs ul { list-style:none; padding:0; margin:0; }
@@ -173,10 +199,12 @@
     .control-hint { padding:0 .45rem; color:var(--dim); }
     @media (prefers-reduced-motion:reduce) {
       html { scroll-behavior:auto; }
+      .t-line { opacity:1; }
       *,*::before,*::after { animation:none !important; transition:none !important; }
     }
     @media print {
       *,*::before,*::after { animation:none !important; transition:none !important; }
+      .t-line { opacity:1; }
     }
     @media(max-width:800px) {
       .viewport { padding:.7rem .6rem 4.6rem; }
@@ -186,6 +214,8 @@
       .cards { grid-template-columns:minmax(0,1fr); gap:.7rem; }
       .with-qr,.speaker,.refs { grid-template-columns:minmax(0,1fr); gap:1.2rem; }
       .qr { justify-items:start; }
+      .monogram { width:4.6rem; font-size:1.8rem; }
+      .id-card h2 { font-size:2rem; }
       .cards .card { padding:.8rem 1rem; }
       .cards .card .symbol { display:inline; margin-right:.7rem; font-size:1.5rem; }
       .cards--numbered .card .symbol { margin:0; font-size:1.7rem; }
@@ -239,16 +269,21 @@
     <section class="slide slide--blue" id="slide-2" data-outline-slide="1" aria-label="Quién soy" hidden>
       <div class="mast"><span>Quién soy / 02</span><span class="kind">Hola, MedellínJS</span></div>
       <div class="body speaker">
-        <div>
-          <span class="chip">PONENTE</span>
-          <h2 style="margin-top:1rem">Wbert Adrian<br><span class="accent">Castro Vera</span></h2>
-          <p class="lead">FullStack AI Developer en <span class="accent">NodeSource</span>.</p>
-          <p class="handle">@dobleuber</p>
+        <div class="id-card">
+          <div class="id-top"><span>ID // PONENTE</span><span>MEDELLÍN · CO</span></div>
+          <div class="id-main">
+            <div class="monogram" aria-hidden="true">WC</div>
+            <div>
+              <h2>Wbert Adrián<br><span class="accent">Castro Vera</span></h2>
+              <p class="role">FullStack AI Developer</p>
+            </div>
+          </div>
+          <div class="id-tags"><span class="tag tag--hot">NodeSource</span><span class="tag">Inteligencia artificial</span><span class="tag tag--pink">Robótica</span></div>
+          <p class="id-handle">@dobleuber <span>· GitHub · X</span></p>
         </div>
-        <div class="cards">
-          <div class="card"><strong>Qué hago</strong><p>Desarrollo full stack con IA, con muchos años de experiencia.</p></div>
-          <div class="card"><strong>Qué me apasiona</strong><p>La inteligencia artificial y la robótica: llevo muchos años estudiándolas.</p></div>
-          <div class="card"><strong>Dónde encontrarme</strong><p>github.com/dobleuber</p></div>
+        <div class="terminal">
+          <div class="terminal-bar" aria-hidden="true"><i></i><i></i><i></i><span>~/medellinjs</span></div>
+          <pre><span class="t-line" style="--d:0"><b>$</b> whoami</span><span class="t-line out" style="--d:1">dobleuber · FullStack AI Developer</span><span class="t-line" style="--d:2"><b>$</b> cat trabajo</span><span class="t-line out" style="--d:3">NodeSource</span><span class="t-line" style="--d:4"><b>$</b> uptime</span><span class="t-line out" style="--d:5">muchos años construyendo software</span><span class="t-line" style="--d:6"><b>$</b> ls ~/pasiones | wc -l</span><span class="t-line out" style="--d:7">demasiadas para una diapositiva</span><span class="t-line" style="--d:8"><b>$</b> ls ~/pasiones | grep -E "ia|robótica"</span><span class="t-line hl" style="--d:9">inteligencia-artificial/   robótica/</span><span class="t-line dim" style="--d:10"># las de hoy: años estudiándolas</span><span class="t-line" style="--d:11"><b>$</b> <span class="t-cursor">▮</span></span></pre>
         </div>
       </div>
     </section>
