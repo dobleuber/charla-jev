@@ -235,6 +235,10 @@ const agenda = [
     "transition": "La respuesta contiene cinco probabilidades; agrupar esos correos es código de aplicación común y corriente.",
     "sources": [
       {
+        "label": "Rutas de estado explícitas en TypeSafe",
+        "url": "https://docs.typesafe.ai/primitives#reference-specific-fields"
+      },
+      {
         "label": "Estado estructurado",
         "url": "https://docs.typesafe.ai/concepts/state"
       },
