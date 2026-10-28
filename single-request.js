@@ -3,7 +3,7 @@
   const ticketCases = {
     clear: {
       label: 'Cliente frustrado y urgente',
-      state: { ticket: { subject: 'La compra no funciona', body: "La compra lleva tres días fallando. Estamos perdiendo ventas. Estoy furioso. Por favor ayúdennos hoy." } },
+      state: { ticket: { subject: 'La compra no funciona', body: "La compra lleva tres días fallando. Estamos perdiendo ventas. Estoy furioso. Por favor, ayúdennos hoy." } },
       answers: {
         category: { type: 'choice', choice: 'technical', probabilities: { billing: 0.03, technical: 0.90, review: 0.07 }, confidence: 0.85 },
         frustration: { type: 'score', score: 1.8, probabilities: { '0': 0, '1': 0.2, '2': 0.8 }, confidence: 0.7, legend: { '0': 'Tranquilo, solo describe hechos', '1': 'Frustrado pero cordial', '2': 'Muy enojado, usa expresiones intensas' } },
