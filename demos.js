@@ -142,16 +142,21 @@
     codeDirty = false; showCode();
     return planInfo.plan;
   }
-  function responsesCode() {
-    if (!lastResult?.providers) return '// Pulsa Ejecutar para ver aquí las respuestas originales de cada proveedor.';
-    const raw = provider => lastResult.providers[provider]?.raw ?? { error: lastResult.providers[provider]?.error ?? 'Sin respuesta' };
-    return `// Respuesta original de JEV (sin razonamiento interno)\nconst jevResponse = ${JSON.stringify(raw('jev'),null,2)};\n\n// Respuesta original del LLM local\nconst localResponse = ${JSON.stringify(raw('local'),null,2)};`;
+  function rawFor(provider) {
+    const item = lastResult?.providers?.[provider];
+    if (!item) return '// Pulsa Ejecutar para ver aquí la respuesta original.';
+    const raw = structuredClone(item.raw ?? { error: item.error ?? 'Sin respuesta' });
+    if (typeof raw.message?.content === 'string') { try { raw.message.content = JSON.parse(raw.message.content); } catch {} }
+    return JSON.stringify(raw, null, 2);
   }
   function showCode() {
     if (!planInfo) return;
     document.querySelectorAll('[data-code-tab]').forEach(node => node.setAttribute('aria-pressed', String(node.dataset.codeTab === codeTab)));
     const plan = planInfo.plan;
-    $('#code-content').textContent = codeTab === 'implementation' ? planInfo.javascript_code : codeTab === 'schema' ? `// JSON Schema real enviado a Ollama\nconst schema = ${JSON.stringify(plan.local_request.format,null,2)};\n\n// Preguntas y rúbrica compartidas\nconst questions = ${JSON.stringify(plan.jev_request.questions,null,2)};` : codeTab === 'responses' ? responsesCode() : `// Solicitudes que el servidor envía a cada proveedor.\nconst jevRequest = ${JSON.stringify(plan.jev_request,null,2)};\n\nconst localRequest = ${JSON.stringify(plan.local_request,null,2)};`;
+    const responses = codeTab === 'responses';
+    $('#code-block').hidden = responses; $('#code-responses').hidden = !responses;
+    if (responses) { $('#response-jev').textContent = rawFor('jev'); $('#response-local').textContent = rawFor('local'); return; }
+    $('#code-content').textContent = codeTab === 'implementation' ? planInfo.javascript_code : codeTab === 'schema' ? `// JSON Schema real enviado a Ollama\nconst schema = ${JSON.stringify(plan.local_request.format,null,2)};\n\n// Preguntas y rúbrica compartidas\nconst questions = ${JSON.stringify(plan.jev_request.questions,null,2)};` : `// Solicitudes que el servidor envía a cada proveedor.\nconst jevRequest = ${JSON.stringify(plan.jev_request,null,2)};\n\nconst localRequest = ${JSON.stringify(plan.local_request,null,2)};`;
   }
   function clocks() {
     if (!lastResult) return;

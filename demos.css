@@ -138,6 +138,11 @@ details.raw pre{max-height:230px;font-size:11px}
 .code-panel>summary{font-size:1.1rem;font-weight:700}
 .code-tabs{display:flex;gap:7px;flex-wrap:wrap;margin-top:18px}
 .code-tabs button[aria-pressed=true]{background:var(--cyan);color:var(--void);border-color:var(--cyan)}
+.code-responses{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin-top:16px}
+.code-responses[hidden]{display:none}
+.code-responses h4{margin:0 0 8px;font:700 .8rem/1.2 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--cyan)}
+.code-responses pre{margin:0;max-height:520px}
+@media(max-width:760px){.code-responses{grid-template-columns:1fr}}
 .illustration-note{margin:22px 0;border:1px dashed #fcee0a66;padding:20px;color:var(--muted);font-size:.85rem}
 .illustration-note strong{color:var(--yellow)}
 .illustration-note p{margin-top:5px}
