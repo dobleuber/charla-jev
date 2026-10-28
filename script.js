@@ -10,6 +10,41 @@ function nextIndex(current, step, count) {
   return Math.max(0, Math.min(count - 1, current + step));
 }
 
+// Speaker terminal: types one line at a time, pauses, runs `clear` and starts over.
+// It only runs while its slide is on screen; with reduced motion every line stays visible.
+if (typeof document !== 'undefined') {
+  const LINE_MS = 600, HOLD_MS = 6000, CLEAR_MS = 900, BLANK_MS = 500;
+  const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)');
+  for (const terminal of document.querySelectorAll('[data-terminal-loop]')) {
+    const lines = [...terminal.querySelectorAll('.t-line')];
+    const prompt = lines.at(-1), promptHtml = prompt.innerHTML;
+    const slide = terminal.closest('.slide');
+    let timer = null, running = false;
+    const wait = ms => new Promise(resolve => { timer = setTimeout(resolve, ms); });
+    function stop() {
+      clearTimeout(timer); running = false;
+      terminal.classList.remove('is-typing'); prompt.innerHTML = promptHtml;
+      lines.forEach(line => line.classList.remove('is-shown'));
+    }
+    async function run() {
+      running = true; terminal.classList.add('is-typing');
+      while (running) {
+        for (const line of lines) { await wait(LINE_MS); if (!running) return; line.classList.add('is-shown'); }
+        await wait(HOLD_MS); if (!running) return;
+        prompt.innerHTML = '<b>$</b> clear<span class="t-cursor">▮</span>';
+        await wait(CLEAR_MS); if (!running) return;
+        lines.forEach(line => line.classList.remove('is-shown')); prompt.innerHTML = promptHtml;
+        await wait(BLANK_MS);
+      }
+    }
+    document.addEventListener('deckchange', () => {
+      const visible = !slide.hidden && !reduced?.matches;
+      if (visible && !running) run();
+      else if (!visible && running) stop();
+    });
+  }
+}
+
 if (typeof document !== 'undefined') {
   const slides = [...document.querySelectorAll('.slide')];
   const counter = document.getElementById('slide-counter');

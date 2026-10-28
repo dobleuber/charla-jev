@@ -176,13 +176,13 @@
     .terminal-bar i:nth-child(3) { background:var(--cyan); }
     .terminal-bar span { margin-left:auto; }
     .terminal pre { padding:1.1rem 1.4rem 1.3rem; color:#bdf8ff; font:600 1.02rem/1.75 var(--font-mono); letter-spacing:0; }
-    .t-line { display:block; opacity:0; animation:type-in .01s linear forwards; animation-delay:calc(var(--d) * .32s + .2s); }
+    .t-line { display:block; }
+    .terminal.is-typing .t-line:not(.is-shown) { visibility:hidden; }
     .t-line b { color:var(--magenta); }
     .t-line.out { color:var(--text); }
     .t-line.dim { color:var(--dim); }
     .t-line.hl { color:var(--yellow); text-shadow:0 0 .5rem #fcee0a88; }
     .t-cursor { color:var(--cyan); animation:blink 1.1s steps(1) infinite; }
-    @keyframes type-in { to { opacity:1; } }
     .refs { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; margin-top:1.4rem; }
     .refs .card h3 { font-size:1.25rem; color:var(--surface-accent); margin-bottom:.6rem; }
     .refs ul { list-style:none; padding:0; margin:0; }
@@ -199,12 +199,11 @@
     .control-hint { padding:0 .45rem; color:var(--dim); }
     @media (prefers-reduced-motion:reduce) {
       html { scroll-behavior:auto; }
-      .t-line { opacity:1; }
       *,*::before,*::after { animation:none !important; transition:none !important; }
     }
     @media print {
       *,*::before,*::after { animation:none !important; transition:none !important; }
-      .t-line { opacity:1; }
+      .terminal .t-line { visibility:visible !important; }
     }
     @media(max-width:800px) {
       .viewport { padding:.7rem .6rem 4.6rem; }
@@ -281,9 +280,9 @@
           <div class="id-tags"><span class="tag tag--hot">NodeSource</span><span class="tag">Inteligencia artificial</span><span class="tag tag--pink">Robótica</span></div>
           <p class="id-handle">@dobleuber <span>· GitHub · X</span></p>
         </div>
-        <div class="terminal">
+        <div class="terminal" data-terminal-loop>
           <div class="terminal-bar" aria-hidden="true"><i></i><i></i><i></i><span>~/medellinjs</span></div>
-          <pre><span class="t-line" style="--d:0"><b>$</b> whoami</span><span class="t-line out" style="--d:1">dobleuber · FullStack AI Developer</span><span class="t-line" style="--d:2"><b>$</b> cat trabajo</span><span class="t-line out" style="--d:3">NodeSource</span><span class="t-line" style="--d:4"><b>$</b> uptime</span><span class="t-line out" style="--d:5">muchos años construyendo software</span><span class="t-line" style="--d:6"><b>$</b> ls ~/pasiones | wc -l</span><span class="t-line out" style="--d:7">demasiadas para una diapositiva</span><span class="t-line" style="--d:8"><b>$</b> ls ~/pasiones | grep -E "ia|robótica"</span><span class="t-line hl" style="--d:9">inteligencia-artificial/   robótica/</span><span class="t-line dim" style="--d:10"># las de hoy: años estudiándolas</span><span class="t-line" style="--d:11"><b>$</b> <span class="t-cursor">▮</span></span></pre>
+          <pre><span class="t-line"><b>$</b> whoami</span><span class="t-line out">dobleuber · FullStack AI Developer</span><span class="t-line"><b>$</b> cat trabajo</span><span class="t-line out">NodeSource</span><span class="t-line"><b>$</b> uptime</span><span class="t-line out">muchos años construyendo software</span><span class="t-line"><b>$</b> ls ~/pasiones | wc -l</span><span class="t-line out">demasiadas para una diapositiva</span><span class="t-line"><b>$</b> ls ~/pasiones | grep -E "ia|robótica"</span><span class="t-line hl">inteligencia-artificial/   robótica/</span><span class="t-line dim"># las de hoy: años estudiándolas</span><span class="t-line"><b>$</b> <span class="t-cursor">▮</span></span></pre>
         </div>
       </div>
     </section>
