@@ -101,6 +101,8 @@ test('JEV gets the image header; the local bbox_2d is normalized and policy neve
 test('Box answers must keep ordered edges and confidence; routes follow the illustrative cut-offs', async () => {
   const request = (await buildPlan('photo', 'damaged', 'qwen3-vl:2b-instruct', await photoRoot())).jev_request;
   assert.ok(validateJev({ model: 'jev-1.14.0', answers: jevAnswers }, request));
+  assert.ok(validateJev({ model: 'jev-1.14.0', answers: { ...jevAnswers, ubicacion_danio: { ...jevBox, confidence: null } } }, request), 'the API documents a null Box confidence');
+  assert.throws(() => validateJev({ model: 'jev-1.14.0', answers: { ...jevAnswers, ubicacion_danio: { ...jevBox, confidence: 1.5 } } }, request), DemoError);
   for (const box of [{ ...jevBox.box, left: 0.7 }, { ...jevBox.box, extra: 1 }, { ...jevBox.box, bottom: 1.2 }]) assert.throws(() => validateJev({ model: 'jev-1.14.0', answers: { ...jevAnswers, ubicacion_danio: { ...jevBox, box } } }, request), DemoError);
   const noul = (danio, coincide) => ({ ...jevAnswers, danio_visible: { noul: danio }, coincide_con_reclamo: { noul: coincide } });
   assert.equal(applicationResult('photo', noul(0.9, 0.9), false).route, 'review_with_evidence');

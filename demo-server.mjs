@@ -161,7 +161,8 @@ export function validateJev(raw, request) {
       const edge = { type: 'number', minimum: 0, maximum: 1 };
       validate(answer.box, { type: 'object', properties: { top: edge, bottom: edge, left: edge, right: edge }, required: ['top', 'bottom', 'left', 'right'], additionalProperties: false });
       if (answer.box.left >= answer.box.right || answer.box.top >= answer.box.bottom) throw new DemoError('Box edges are inverted');
-      validate(answer.confidence, { type: 'number', minimum: 0, maximum: 1 });
+      // The API documents Box confidence as a number or null when the model gives none.
+      if (answer.confidence !== null) validate(answer.confidence, { type: 'number', minimum: 0, maximum: 1 });
       continue;
     }
     validate(answer.confidence, { type: 'number', minimum: 0, maximum: 1 });

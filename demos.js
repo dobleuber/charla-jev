@@ -227,14 +227,14 @@
       }
     } else if (lastResult.demo === 'photo') {
       const show = item.application.show_box, box = provider === 'jev' ? answers.ubicacion_danio.box : answers.ubicacion_danio;
-      photoFigure(container, lastResult.case, show ? [{ box, label: provider === 'jev' ? `JEV · confianza ${answers.ubicacion_danio.confidence.toFixed(2).replace('.',',')}` : 'LLM · bbox_2d' }] : []);
+      photoFigure(container, lastResult.case, show ? [{ box, label: provider === 'jev' ? (answers.ubicacion_danio.confidence === null ? 'JEV · sin confianza' : `JEV · confianza ${answers.ubicacion_danio.confidence.toFixed(2).replace('.',',')}`) : 'LLM · bbox_2d' }] : []);
       if (!show) text(container,'p','El recuadro no se dibuja: este proveedor no ve daño en la foto.','helper');
       for (const [key, label] of [['danio_visible','¿Daño visible?'],['tipo_danio','Tipo de daño'],['coincide_con_reclamo','¿Coincide con el reclamo?'],['ubicacion_danio','Ubicación del daño']]) {
         const section = document.createElement('section'); section.className = 'answer-card'; text(section,'h3',label);
         const answer = answers[key];
         if (provider === 'jev') {
           if (key === 'tipo_danio') { text(section,'div',damageTypes[answer.choice],'answer-main'); distributions(section,answer.probabilities,damageTypes); text(section,'p',`Confianza reportada: ${answer.confidence.toFixed(2).replace('.',',')}`,'sub'); }
-          else if (key === 'ubicacion_danio') { const b = answer.box; text(section,'div',`izq ${b.left.toFixed(2)} · der ${b.right.toFixed(2)} · arriba ${b.top.toFixed(2)} · abajo ${b.bottom.toFixed(2)}`.replaceAll('.',','),'answer-main'); text(section,'p',`Bordes normalizados de 0 a 1. Confianza: ${answer.confidence.toFixed(2).replace('.',',')}. Box siempre devuelve un recuadro, aunque no haya daño.`,'sub'); }
+          else if (key === 'ubicacion_danio') { const b = answer.box; text(section,'div',`izq ${b.left.toFixed(2)} · der ${b.right.toFixed(2)} · arriba ${b.top.toFixed(2)} · abajo ${b.bottom.toFixed(2)}`.replaceAll('.',','),'answer-main'); text(section,'p',`Bordes normalizados de 0 a 1. Confianza: ${answer.confidence === null ? 'no informada' : answer.confidence.toFixed(2).replace('.',',')}. Box siempre devuelve un recuadro, aunque no haya daño.`,'sub'); }
           else { text(section,'div',`P(sí) = ${answer.noul.toFixed(2).replace('.',',')}`,'answer-main'); text(section,'p','Valor Noul devuelto por el proveedor.','sub'); }
         } else {
           if (key === 'tipo_danio') text(section,'div',damageTypes[answer],'answer-main');
